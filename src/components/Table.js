@@ -8,6 +8,8 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import cuid from "cuid";
+import { IconButton, Input, InputAdornment, Tooltip } from "@material-ui/core";
+import CheckIcon from "@material-ui/icons/Check";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -27,29 +29,19 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
-
 const useStyles = makeStyles({
   table: {
     minWidth: 700,
   },
 });
 
-export default function CustomizedTables({ data, headers }) {
+export default function CustomizedTables({ data, headers, updateServerName }) {
   // {data:dummyData, to: '/hhhh'}
   //const { data } = props;
   //const data = props.data;
   const classes = useStyles();
+  const [editCellID, setEditCellID] = React.useState("");
+  const [cellInput, setCellInput] = React.useState("");
 
   return (
     <TableContainer component={Paper}>
@@ -67,10 +59,55 @@ export default function CustomizedTables({ data, headers }) {
         </TableHead>
         <TableBody>
           {data.map((item) => (
-            <StyledTableRow key={cuid()}>
-              <StyledTableCell component="th" align="left" scope="row">
-                {item.serverName}
-              </StyledTableCell>
+            <StyledTableRow key={item.id}>
+              {editCellID === item.id ? (
+                <StyledTableCell align="left" scope="row">
+                  <form
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      updateServerName(editCellID, cellInput);
+                      setEditCellID("");
+                    }}
+                  >
+                    <Input
+                      id="rename-input"
+                      // type={values.showPassword ? "text" : "password"}
+                      value={cellInput}
+                      onChange={(event) => setCellInput(event.target.value)}
+                      autoFocus
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={() => {
+                              updateServerName(editCellID, cellInput);
+                              setEditCellID("");
+                            }}
+                            // onMouseDown={handleMouseDownPassword}
+                          >
+                            <CheckIcon />
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                    />
+                  </form>
+                </StyledTableCell>
+              ) : (
+                <StyledTableCell
+                  onDoubleClick={() => {
+                    setEditCellID(item.id);
+                    setCellInput(item.serverName);
+                  }}
+                  component="th"
+                  align="left"
+                  scope="row"
+                >
+                  <Tooltip title="Double click to update" placement="right">
+                    <span>{item.serverName}</span>
+                  </Tooltip>
+                </StyledTableCell>
+              )}
+
               <StyledTableCell align="left">{item.serverID}</StyledTableCell>
               <StyledTableCell align="left">{item.numOfUsers}</StyledTableCell>
             </StyledTableRow>
