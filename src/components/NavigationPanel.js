@@ -14,7 +14,7 @@ import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
 import { Button } from "@material-ui/core";
 import Logo from "../assets/images/logo.png";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import cuid from "cuid";
 import TrendingUpIcon from "@material-ui/icons/TrendingUp";
 import BuildIcon from "@material-ui/icons/Build";
@@ -71,7 +71,7 @@ export default function NavigationPanel({ setIsUserLoggedIn }) {
     ];
   } else if (status === "administrator") {
     navigationPanelOptions = [
-      { name: "Status", icon: <TrendingUpIcon /> },
+      { name: "Status", icon: <TrendingUpIcon />, path: "/status" },
       { name: "MCU Management", icon: <BuildIcon /> },
       { name: "User Management", icon: <PeopleIcon /> },
       { name: "Statistics", icon: <AssessmentIcon /> },
@@ -108,7 +108,7 @@ export default function NavigationPanel({ setIsUserLoggedIn }) {
         <div className={classes.drawerContainer}>
           <List>
             {navigationPanelOptions.map((item, index) => (
-              <ListItem button key={cuid()}>
+              <ListItem component={Link} to={item.path} button key={cuid()}>
                 <ListItemIcon>{item.icon}</ListItemIcon>
                 <ListItemText primary={item.name} />
               </ListItem>

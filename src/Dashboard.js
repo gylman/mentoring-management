@@ -1,10 +1,9 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Route, Switch } from "react-router-dom";
-import About from "./pages/About";
-import Home from "./pages/Home";
 import NavigationPanel from "./components/NavigationPanel";
 import { Toolbar } from "@material-ui/core";
+import Status from "./pages/Status";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -20,10 +19,7 @@ function Dashboard({ setIsUserLoggedIn }) {
   const routes = (
     <Switch>
       <Route exact path="/">
-        <Home />
-      </Route>
-      <Route exact path="/about">
-        <About />
+        <Status />
       </Route>
     </Switch>
   );
