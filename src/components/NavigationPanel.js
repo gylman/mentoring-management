@@ -16,6 +16,11 @@ import { Button } from "@material-ui/core";
 import Logo from "../assets/images/logo.png";
 import { useHistory } from "react-router-dom";
 import cuid from "cuid";
+import TrendingUpIcon from "@material-ui/icons/TrendingUp";
+import BuildIcon from "@material-ui/icons/Build";
+import PersonIcon from "@material-ui/icons/Person";
+import PeopleIcon from "@material-ui/icons/People";
+import AssessmentIcon from "@material-ui/icons/Assessment";
 const drawerWidth = 280;
 
 const useStyles = makeStyles((theme) => ({
@@ -57,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
 export default function NavigationPanel({ setIsUserLoggedIn }) {
   const classes = useStyles();
   const history = useHistory();
-  const status = "instructor";
+  const status = "administrator";
   let navigationPanelOptions;
   if (status === "instructor") {
     navigationPanelOptions = [
@@ -66,9 +71,10 @@ export default function NavigationPanel({ setIsUserLoggedIn }) {
     ];
   } else if (status === "administrator") {
     navigationPanelOptions = [
-      { name: "Classroom registration" },
-      { name: "Usage information" },
-      { name: "Profile" },
+      { name: "Status", icon: <TrendingUpIcon /> },
+      { name: "MCU Management", icon: <BuildIcon /> },
+      { name: "User Management", icon: <PeopleIcon /> },
+      { name: "Statistics", icon: <AssessmentIcon /> },
     ];
   }
   return (
@@ -103,20 +109,16 @@ export default function NavigationPanel({ setIsUserLoggedIn }) {
           <List>
             {navigationPanelOptions.map((item, index) => (
               <ListItem button key={cuid()}>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
+                <ListItemIcon>{item.icon}</ListItemIcon>
                 <ListItemText primary={item.name} />
               </ListItem>
             ))}
           </List>
           <Divider />
           <List>
-            {[{ name: "Profile" }].map((item, index) => (
+            {[{ name: "Profile", icon: <PersonIcon /> }].map((item, index) => (
               <ListItem button key={cuid()}>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
+                <ListItemIcon>{item.icon}</ListItemIcon>
                 <ListItemText primary={item.name} />
               </ListItem>
             ))}
