@@ -62,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
 export default function NavigationPanel({ setIsUserLoggedIn }) {
   const classes = useStyles();
   const history = useHistory();
+  const [activeOption, setActiveOption] = React.useState("");
   const status = "administrator";
   let navigationPanelOptions;
   if (status === "instructor") {
@@ -71,10 +72,25 @@ export default function NavigationPanel({ setIsUserLoggedIn }) {
     ];
   } else if (status === "administrator") {
     navigationPanelOptions = [
-      { name: "Status", icon: <TrendingUpIcon />, path: "/status" },
-      { name: "MCU Management", icon: <BuildIcon /> },
-      { name: "User Management", icon: <PeopleIcon /> },
-      { name: "Statistics", icon: <AssessmentIcon /> },
+      { name: "Status", icon: <TrendingUpIcon />, path: "/", id: cuid() },
+      {
+        name: "MCU Management",
+        icon: <BuildIcon />,
+        path: "/mcu-management",
+        id: cuid(),
+      },
+      {
+        name: "User Management",
+        icon: <PeopleIcon />,
+        path: "/user-management",
+        id: cuid(),
+      },
+      {
+        name: "Statistics",
+        icon: <AssessmentIcon />,
+        path: "/statistics",
+        id: cuid(),
+      },
     ];
   }
   return (
@@ -107,8 +123,15 @@ export default function NavigationPanel({ setIsUserLoggedIn }) {
         <Toolbar />
         <div className={classes.drawerContainer}>
           <List>
-            {navigationPanelOptions.map((item, index) => (
-              <ListItem component={Link} to={item.path} button key={cuid()}>
+            {navigationPanelOptions.map((item) => (
+              <ListItem
+                onClick={() => setActiveOption(item.path)}
+                selected={activeOption === item.path}
+                component={Link}
+                to={item.path}
+                button
+                key={item.id}
+              >
                 <ListItemIcon>{item.icon}</ListItemIcon>
                 <ListItemText primary={item.name} />
               </ListItem>
