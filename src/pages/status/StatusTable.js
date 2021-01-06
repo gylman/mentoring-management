@@ -10,6 +10,7 @@ import Paper from "@material-ui/core/Paper";
 import cuid from "cuid";
 import { IconButton, Input, InputAdornment, Tooltip } from "@material-ui/core";
 import CheckIcon from "@material-ui/icons/Check";
+import { Link } from "react-router-dom";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -108,7 +109,13 @@ export default function CustomizedTables({ data, headers, updateServerName }) {
                 </StyledTableCell>
               )}
 
-              <StyledTableCell align="left">{item.serverID}</StyledTableCell>
+              <StyledTableCell
+                component={Link}
+                to={`server-details/${item.serverID}`}
+                align="left"
+              >
+                {item.serverID}
+              </StyledTableCell>
               <StyledTableCell align="left">{item.numOfUsers}</StyledTableCell>
             </StyledTableRow>
           ))}

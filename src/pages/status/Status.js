@@ -1,7 +1,7 @@
 import { Table } from "@material-ui/core";
 import React from "react";
 import cuid from "cuid";
-import CustomizedTables from "../components/Table";
+import CustomizedTables from "./StatusTable";
 
 function Status() {
   const [dummyData, setDummyData] = React.useState([
@@ -34,11 +34,14 @@ function Status() {
   ];
 
   return (
-    <CustomizedTables
-      data={dummyData}
-      headers={tableHeaders}
-      updateServerName={updateServerName}
-    />
+    <>
+      <h1>MCU  list</h1>
+      <CustomizedTables
+        data={dummyData}
+        headers={tableHeaders}
+        updateServerName={updateServerName}
+      />
+    </>
   );
 }
 
