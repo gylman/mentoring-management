@@ -21,7 +21,7 @@ function ServerDetails() {
   return (
     <>
       <h1>MCU details</h1>
-      <ServerDetailsTable data={dummyData} headers={tableHeaders} />;
+      <ServerDetailsTable data={dummyData} headers={tableHeaders} />
     </>
   );
 }

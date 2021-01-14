@@ -5,6 +5,7 @@ import NavigationPanel from "./components/NavigationPanel";
 import { Toolbar } from "@material-ui/core";
 import Status from "./pages/status/Status";
 import ServerDetails from "./pages/server-details/ServerDetails";
+import UserManagement from "./pages/user-management/UserManagement";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -21,6 +22,9 @@ function Dashboard({ setIsUserLoggedIn }) {
     <Switch>
       <Route exact path="/">
         <Status />
+      </Route>
+      <Route exact path="/user-management">
+        <UserManagement />
       </Route>
       <Route exact path="/server-details/:serverID">
         <ServerDetails />
