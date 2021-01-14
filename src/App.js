@@ -1,5 +1,3 @@
-import { Redirect, Route, Switch } from "react-router-dom";
-import SignIn from "./pages/SignIn";
 import { useState } from "react";
 import Dashboard from "./Dashboard";
 import Landing from "./Landing";
