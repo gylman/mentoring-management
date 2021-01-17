@@ -2,6 +2,7 @@ import {
   Button,
   Grid,
   makeStyles,
+  Snackbar,
   TextField,
   Typography,
 } from "@material-ui/core";
@@ -45,18 +46,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SignIn({ setIsUserLoggedIn }) {
+function SignIn() {
   const classes = useStyles();
   const history = useHistory();
+  const [userId, setUserId] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [openAlert, setOpenAlert] = React.useState(false);
   const auth = useContext(AuthContext);
 
+  function handleClose() {
+    setOpenAlert(false);
+  }
+
   async function submitLoginForm() {
+    if (!password.length || !userId.length) {
+      return setOpenAlert(true);
+    }
+    
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/v1/auth`,
         {
-          userId: "12345678",
-          password: "ee591301",
+          userId: userId,
+          password: password,
+          // userId: "12345678",
+          // password: "ee591301",
         }
       );
 
@@ -67,9 +81,20 @@ function SignIn({ setIsUserLoggedIn }) {
           fullName: "Qilman",
           status: "teacher",
         });
+        setUserId("");
+        setPassword("");
+        history.push("/");
+      } else {
       }
-    } catch (error) {}
+    } catch (error) {
+      setOpenAlert(true);
+      console.log(error);
+    }
   }
+
+  // function Alert(props) {
+  //   return <MuiAlert elevation={6} variant="filled" {...props} />;
+  // }
 
   return (
     <>
@@ -100,6 +125,8 @@ function SignIn({ setIsUserLoggedIn }) {
               id="filled-basic"
               label="User ID"
               variant="filled"
+              value={userId}
+              onChange={(event) => setUserId(event.target.value)}
             />
           </Grid>
         </Grid>
@@ -112,6 +139,8 @@ function SignIn({ setIsUserLoggedIn }) {
               label="Password"
               variant="filled"
               type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
             />
           </Grid>
         </Grid>
@@ -124,7 +153,6 @@ function SignIn({ setIsUserLoggedIn }) {
               onClick={() => {
                 // setIsUserLoggedIn(true);
                 submitLoginForm();
-                history.push("/");
               }}
             >
               Sign in
@@ -138,6 +166,20 @@ function SignIn({ setIsUserLoggedIn }) {
             </Typography>
           </Grid>
         </Grid>
+        <Snackbar
+          onClose={handleClose}
+          open={openAlert}
+          message="Your password or user id is not correct!"
+          ContentProps={{
+            style: {
+              marginTop: "45px",
+              backgroundColor: "#FF3232",
+            },
+          }}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          // onClose={() => setAlert({ ...alert, open: false })}
+          autoHideDuration={2000}
+        />
       </Grid>
     </>
   );
