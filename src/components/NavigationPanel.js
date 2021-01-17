@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import AppBar from "@material-ui/core/AppBar";
@@ -21,6 +21,7 @@ import BuildIcon from "@material-ui/icons/Build";
 import PersonIcon from "@material-ui/icons/Person";
 import PeopleIcon from "@material-ui/icons/People";
 import AssessmentIcon from "@material-ui/icons/Assessment";
+import { AuthContext } from "../context/authContext";
 const drawerWidth = 280;
 
 const useStyles = makeStyles((theme) => ({
@@ -62,6 +63,8 @@ const useStyles = makeStyles((theme) => ({
 export default function NavigationPanel({ setIsUserLoggedIn }) {
   const classes = useStyles();
   const history = useHistory();
+  const auth = useContext(AuthContext);
+
   const [activeOption, setActiveOption] = React.useState("");
   const status = "administrator";
   let navigationPanelOptions;
@@ -93,6 +96,7 @@ export default function NavigationPanel({ setIsUserLoggedIn }) {
       },
     ];
   }
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -104,7 +108,8 @@ export default function NavigationPanel({ setIsUserLoggedIn }) {
             <Button
               color="primary"
               onClick={() => {
-                setIsUserLoggedIn(false);
+                // setIsUserLoggedIn(false);
+                auth.logout();
                 history.push("/signin");
               }}
             >

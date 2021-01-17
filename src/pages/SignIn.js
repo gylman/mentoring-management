@@ -5,11 +5,13 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import React from "react";
+import React, { useContext } from "react";
+import axios from "axios";
 import { useHistory } from "react-router-dom";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Logo from "../assets/images/logo.png";
+import { AuthContext } from "../context/authContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,6 +48,29 @@ const useStyles = makeStyles((theme) => ({
 function SignIn({ setIsUserLoggedIn }) {
   const classes = useStyles();
   const history = useHistory();
+  const auth = useContext(AuthContext);
+
+  async function submitLoginForm() {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/v1/auth`,
+        {
+          userId: "12345678",
+          password: "ee591301",
+        }
+      );
+
+      if (response.data.status === "success") {
+        auth.login({
+          token: response.data.token,
+          id: response.data.user.userId,
+          fullName: "Qilman",
+          status: "teacher",
+        });
+      }
+    } catch (error) {}
+  }
+
   return (
     <>
       <AppBar style={{ backgroundColor: "white" }} position="static">
@@ -97,7 +122,8 @@ function SignIn({ setIsUserLoggedIn }) {
               color="primary"
               fullWidth
               onClick={() => {
-                setIsUserLoggedIn(true);
+                // setIsUserLoggedIn(true);
+                submitLoginForm();
                 history.push("/");
               }}
             >
