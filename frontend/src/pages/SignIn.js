@@ -62,17 +62,15 @@ function SignIn() {
     if (!password.length || !userId.length) {
       return setOpenAlert(true);
     }
-    
+
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/auth`,
-        {
-          userId: userId,
-          password: password,
-          // userId: "12345678",
-          // password: "ee591301",
-        }
-      );
+      const response = await axios.post(`http://localhost:3000/api/v1/auth`, {
+        userId: userId,
+        password: password,
+        // userId: "12345678",
+        // password: "ee591301",
+        // password2: "00dfb6ec"
+      });
 
       if (response.data.status === "success") {
         auth.login({
