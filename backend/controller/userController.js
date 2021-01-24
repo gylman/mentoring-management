@@ -4,13 +4,25 @@ const User = require("../models/UserModel");
 exports.createUser = async function (req, res) {
   const password = crypto.randomBytes(4).toString("hex");
 
-  console.log(password);
+  const userInDB = await User.findOne({ userId: req.body.userId });
+
+  // if (userInDB) {
+  //   return res
+  //     .status(400)
+  //     .json({ status: "fail", message: "this user ID already exists" });
+  // }
 
   const userObject = {
     userId: req.body.userId,
+    name: req.body.name,
+    division: req.body.division,
+    type: req.body.type,
+    phone: req.body.phone,
+    email: req.body.email,
+    address: req.body.address,
     password: password,
   };
-
+  console.log(password);
   try {
     const user = await User.create(userObject);
     if (user) {

@@ -8,11 +8,14 @@ import MuiDialogActions from "@material-ui/core/DialogActions";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
+import { Grid, TextField } from "@material-ui/core";
 
 const styles = (theme) => ({
   root: {
-    margin: 0,
-    padding: theme.spacing(2),
+    display: "flex",
+    flexDirection: "column",
+    margin: "auto",
+    width: "fit-content",
   },
   closeButton: {
     position: "absolute",
@@ -61,27 +64,55 @@ export default function RegisterUserDialog({ handleClose, open }) {
       open={open}
     >
       <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-        Modal title
+        User registration
       </DialogTitle>
       <DialogContent dividers>
-        <Typography gutterBottom>
-          Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-          dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-          consectetur ac, vestibulum at eros.
-        </Typography>
-        <Typography gutterBottom>
-          Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-          Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
-        </Typography>
-        <Typography gutterBottom>
-          Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus
-          magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec
-          ullamcorper nulla non metus auctor fringilla.
-        </Typography>
+        <Grid
+          container
+          style={{ minWidth: "570px" }}
+          justify="center"
+          spacing={2}
+          // flexDirection="column"
+        >
+          <Grid item xs={6}>
+            <TextField fullWidth variant="outlined" placeholder="Personal id" />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField fullWidth variant="outlined" placeholder="Name" />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField fullWidth variant="outlined" placeholder="Division" />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField fullWidth variant="outlined" placeholder="Subject" />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              placeholder="Contact information"
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField fullWidth variant="outlined" placeholder="Email" />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              placeholder="Affiliation business"
+            />
+          </Grid>
+        </Grid>
       </DialogContent>
       <DialogActions>
-        <Button autoFocus onClick={handleClose} color="primary">
-          Save changes
+        <Button
+          autoFocus
+          onClick={handleClose}
+          color="primary"
+          variant="contained"
+        >
+          Submit
         </Button>
       </DialogActions>
     </Dialog>

@@ -8,6 +8,10 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import cuid from "cuid";
+import { IconButton, Input, InputAdornment, Tooltip } from "@material-ui/core";
+import CheckIcon from "@material-ui/icons/Check";
+import { Link } from "react-router-dom";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -33,15 +37,22 @@ const useStyles = makeStyles({
   },
 });
 
-export default function CustomizedTables({ data, headers }) {
+export default function UsersTable({ data, headers, updateServerName }) {
   // {data:dummyData, to: '/hhhh'}
   //const { data } = props;
   //const data = props.data;
+
   const classes = useStyles();
+  const [editCellID, setEditCellID] = React.useState("");
+  const [cellInput, setCellInput] = React.useState("");
 
   return (
     <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="customized table">
+      <Table
+        className={classes.table}
+        aria-label="customized table"
+        size="small"
+      >
         <TableHead>
           <TableRow>
             {headers.map((item) => {
@@ -55,12 +66,17 @@ export default function CustomizedTables({ data, headers }) {
         </TableHead>
         <TableBody>
           {data.map((item) => (
-            <StyledTableRow key={item.id}>
-              <StyledTableCell align="left" scope="row">
-                {item.roomID}
+            <StyledTableRow key={cuid()}>
+              <StyledTableCell align="left">{item.personalId}</StyledTableCell>
+              <StyledTableCell align="left">{item.name}</StyledTableCell>
+              <StyledTableCell align="left">{item.type}</StyledTableCell>
+              <StyledTableCell align="left">{item.subjectName}</StyledTableCell>
+              <StyledTableCell align="left">{item.contactInfo}</StyledTableCell>
+              <StyledTableCell align="left">
+                <IconButton aria-label="delete">
+                  <DeleteIcon />
+                </IconButton>
               </StyledTableCell>
-              <StyledTableCell align="left">{item.startTime}</StyledTableCell>
-              <StyledTableCell align="left">{item.numOfUsers}</StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>

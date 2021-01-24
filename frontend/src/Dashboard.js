@@ -6,6 +6,7 @@ import { Toolbar } from "@material-ui/core";
 import Status from "./pages/status/Status";
 import ServerDetails from "./pages/server-details/ServerDetails";
 import UserManagement from "./pages/user-management/UserManagement";
+import UserRegister from "./pages/user-register/UserRegister";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -28,6 +29,9 @@ function Dashboard({ setIsUserLoggedIn }) {
       </Route>
       <Route exact path="/server-details/:serverID">
         <ServerDetails />
+      </Route>
+      <Route exact path="/add-user">
+        <UserRegister />
       </Route>
     </Switch>
   );
