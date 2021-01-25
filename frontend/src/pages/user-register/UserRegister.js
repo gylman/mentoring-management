@@ -41,7 +41,7 @@ function UserRegister() {
       try {
         const responseObj = {
           method: "get",
-          url: `${process.env.REACT_APP_API_URL}/api/v1/divisions`,
+          url: `http://localhost:3006/api/v1/divisions`,
           // headers: headersObject,
           // cancelToken: source.token,
         };
@@ -106,27 +106,24 @@ function UserRegister() {
         message: "email field is required ",
       });
     }
-    // if (selectedDivision === "choose-one-option") {
-    //   return setAlert({
-    //     open: true,
-    //     color: "#f33336",
-    //     message: "division field is required, please choose one",
-    //   });
-    // }
+    if (selectedDivision === "choose-one-option") {
+      return setAlert({
+        open: true,
+        color: "#f33336",
+        message: "division field is required, please choose one",
+      });
+    }
 
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/users`,
-        {
-          userId: userId.trim(),
-          name: name,
-          division: selectedDivision,
-          type: type,
-          phone: phone,
-          email: email,
-          address: address,
-        }
-      );
+      const response = await axios.post(`http://localhost:3006/api/v1/users`, {
+        userId: userId.trim(),
+        name: name,
+        division: selectedDivision,
+        type: type,
+        phone: phone,
+        email: email,
+        address: address,
+      });
       // console.log(response);
 
       if (response.data.status === "success") {
@@ -138,6 +135,7 @@ function UserRegister() {
         setAddress("");
         setSelectedDivision("choose-one-option");
       }
+      
       if (response.data.status === "fail") {
         setAlert({
           open: true,

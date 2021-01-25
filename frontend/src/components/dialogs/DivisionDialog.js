@@ -82,7 +82,7 @@ export default function DivisionDialog({
   async function submitSaveDivisions() {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/divisions/save`,
+        `http://localhost:3006/api/v1/divisions/save`,
         {
           divisions: divisions.map((item) => item.name),
           // userId: userId,

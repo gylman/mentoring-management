@@ -6,11 +6,11 @@ exports.createUser = async function (req, res) {
 
   const userInDB = await User.findOne({ userId: req.body.userId });
 
-  // if (userInDB) {
-  //   return res
-  //     .status(400)
-  //     .json({ status: "fail", message: "this user ID already exists" });
-  // }
+  if (userInDB) {
+    return res
+      .status(200)
+      .json({ status: "fail", message: "this user ID already exists" });
+  }
 
   const userObject = {
     userId: req.body.userId,
@@ -29,4 +29,13 @@ exports.createUser = async function (req, res) {
       res.status(200).json({ status: "success", data: user });
     }
   } catch (error) {}
+};
+
+exports.getUsers = async function (req, res) {
+  const users = await User.find({});
+
+  res.status(200).json({
+    status: "success",
+    users: users,
+  });
 };

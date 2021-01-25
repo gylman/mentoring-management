@@ -62,17 +62,26 @@ function SignIn() {
     if (!password.length || !userId.length) {
       return setOpenAlert(true);
     }
-    
+    const headersObject = {
+      "Content-Type": "application/json",
+    };
+
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/auth`,
-        {
-          userId: userId,
-          password: password,
-          // userId: "12345678",
-          // password: "ee591301",
-        }
-      );
+      const response = await axios({
+        method: "post",
+        url: `http://localhost:3006/api/v1/auth`,
+        data: { userId: userId, password: password },
+        headers: headersObject,
+      });
+      // const response = await axios.post(
+      //   `${process.env.http://localhost:3006}/api/v1/auth`,
+      //   {
+      //     userId: userId,
+      //     password: password,
+      //     // userId: "12345678",
+      //     // password: "ee591301",
+      //   }
+      // );
 
       if (response.data.status === "success") {
         auth.login({
