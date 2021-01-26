@@ -45,7 +45,12 @@ const useStyles = makeStyles({
   },
 });
 
-export default function UsersTable({ columns, rows }) {
+export default function UsersTable({
+  columns,
+  rows,
+  setDeletionCandidate,
+  handleDeleteDialog,
+}) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -89,6 +94,10 @@ export default function UsersTable({ columns, rows }) {
                           <IconButton
                             aria-label="delete"
                             style={{ width: "20px", height: "20px" }}
+                            onClick={() => {
+                              setDeletionCandidate(row["_id"]);
+                              handleDeleteDialog();
+                            }}
                           >
                             <DeleteIcon
                               style={{ width: "20px", height: "20px" }}

@@ -1,15 +1,14 @@
 const crypto = require("crypto");
 const User = require("../models/UserModel");
+const AppError = require("../utils/appError");
 
-exports.createUser = async function (req, res) {
+exports.createUser = async function (req, res, next) {
   const password = crypto.randomBytes(4).toString("hex");
 
   const userInDB = await User.findOne({ userId: req.body.userId });
 
   if (userInDB) {
-    return res
-      .status(200)
-      .json({ status: "fail", message: "this user ID already exists" });
+    return next(new AppError("User ID already exists", 400));
   }
 
   const userObject = {
@@ -28,7 +27,9 @@ exports.createUser = async function (req, res) {
     if (user) {
       res.status(200).json({ status: "success", data: user });
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 exports.getUsers = async function (req, res) {
@@ -37,5 +38,18 @@ exports.getUsers = async function (req, res) {
   res.status(200).json({
     status: "success",
     users: users,
+  });
+};
+
+exports.deleteUser = async function (req, res) {
+  try {
+    await User.findByIdAndDelete(req.params.userdbId);
+  } catch (error) {
+    console.log(error);
+  }
+
+  res.status(204).json({
+    status: "success",
+    users: null,
   });
 };

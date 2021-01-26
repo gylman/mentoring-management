@@ -1,5 +1,6 @@
 import {
   Button,
+  CircularProgress,
   Grid,
   IconButton,
   MenuItem,
@@ -23,6 +24,7 @@ function UserRegister() {
     open: false,
     color: "",
   });
+  const [loading, setLoading] = React.useState(false);
   const [name, setName] = React.useState("");
   const [type, setType] = React.useState("");
   const [phone, setPhone] = React.useState("");
@@ -41,7 +43,7 @@ function UserRegister() {
       try {
         const responseObj = {
           method: "get",
-          url: `http://localhost:3006/api/v1/divisions`,
+          url: `http://59.26.51.139:4000/api/v1/divisions`,
           // headers: headersObject,
           // cancelToken: source.token,
         };
@@ -115,15 +117,19 @@ function UserRegister() {
     }
 
     try {
-      const response = await axios.post(`http://localhost:3006/api/v1/users`, {
-        userId: userId.trim(),
-        name: name,
-        division: selectedDivision,
-        type: type,
-        phone: phone,
-        email: email,
-        address: address,
-      });
+      setLoading(true);
+      const response = await axios.post(
+        `http://59.26.51.139:4000/api/v1/users`,
+        {
+          userId: userId.trim(),
+          name: name,
+          division: selectedDivision,
+          type: type,
+          phone: phone,
+          email: email,
+          address: address,
+        }
+      );
       // console.log(response);
 
       if (response.data.status === "success") {
@@ -134,9 +140,10 @@ function UserRegister() {
         setEmail("");
         setAddress("");
         setSelectedDivision("choose-one-option");
+        setLoading(false);
       }
-      
       if (response.data.status === "fail") {
+        setLoading(false);
         setAlert({
           open: true,
           color: "#f33336",
@@ -144,12 +151,12 @@ function UserRegister() {
         });
       }
     } catch (error) {
-      // setOpenAlert(true);
       console.log(error);
+      setLoading(false);
       setAlert({
         open: true,
         color: "#f33336",
-        message: error.message,
+        message: error.response.data.message,
       });
     }
   }
@@ -284,18 +291,31 @@ function UserRegister() {
           />
         </Grid>
       </Grid>
-
-      <Grid item xs={6}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            registerUser();
-          }}
+      {loading ? (
+        <Grid
+          style={{ minHeight: "10vh" }}
+          container
+          justify="center"
+          alignItems="center"
+          xs={5}
         >
-          Register
-        </Button>
-      </Grid>
+          <Grid item>
+            <CircularProgress />
+          </Grid>
+        </Grid>
+      ) : (
+        <Grid item xs={6}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              registerUser();
+            }}
+          >
+            Register
+          </Button>
+        </Grid>
+      )}
 
       <DivisionDialog
         open={divisionPopUpState}

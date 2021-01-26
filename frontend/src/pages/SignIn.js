@@ -1,5 +1,6 @@
 import {
   Button,
+  CircularProgress,
   Grid,
   makeStyles,
   Snackbar,
@@ -50,6 +51,7 @@ function SignIn() {
   const classes = useStyles();
   const history = useHistory();
   const [userId, setUserId] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
   const [password, setPassword] = React.useState("");
   const [openAlert, setOpenAlert] = React.useState(false);
   const auth = useContext(AuthContext);
@@ -62,26 +64,17 @@ function SignIn() {
     if (!password.length || !userId.length) {
       return setOpenAlert(true);
     }
-    const headersObject = {
-      "Content-Type": "application/json",
-    };
-
+    setLoading(true);
     try {
-      const response = await axios({
-        method: "post",
-        url: `http://localhost:3006/api/v1/auth`,
-        data: { userId: userId, password: password },
-        headers: headersObject,
-      });
-      // const response = await axios.post(
-      //   `${process.env.http://localhost:3006}/api/v1/auth`,
-      //   {
-      //     userId: userId,
-      //     password: password,
-      //     // userId: "12345678",
-      //     // password: "ee591301",
-      //   }
-      // );
+      const response = await axios.post(
+        `http://59.26.51.139:4000/api/v1/auth`,
+        {
+          userId: userId,
+          password: password,
+          // userId: "12345678",
+          // password: "ee591301",
+        }
+      );
 
       if (response.data.status === "success") {
         auth.login({
@@ -90,12 +83,14 @@ function SignIn() {
           fullName: "Qilman",
           status: "teacher",
         });
+        setLoading(false);
         setUserId("");
         setPassword("");
         history.push("/");
       } else {
       }
     } catch (error) {
+      setLoading(false);
       setOpenAlert(true);
       console.log(error);
     }
@@ -153,21 +148,34 @@ function SignIn() {
             />
           </Grid>
         </Grid>
-        <Grid item container justify="center" style={{ marginBottom: "1em" }}>
-          <Grid item md={3}>
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              onClick={() => {
-                // setIsUserLoggedIn(true);
-                submitLoginForm();
-              }}
-            >
-              Sign in
-            </Button>
+        {loading ? (
+          <Grid
+            style={{ minHeight: "10vh" }}
+            container
+            justify="center"
+            alignItems="center"
+          >
+            <Grid item>
+              <CircularProgress />
+            </Grid>
           </Grid>
-        </Grid>
+        ) : (
+          <Grid item container justify="center" style={{ marginBottom: "1em" }}>
+            <Grid item md={3}>
+              <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                onClick={() => {
+                  // setIsUserLoggedIn(true);
+                  submitLoginForm();
+                }}
+              >
+                Sign in
+              </Button>
+            </Grid>
+          </Grid>
+        )}
         <Grid item container justify="center">
           <Grid item md={3}>
             <Typography className={classes.forgotCredentials}>

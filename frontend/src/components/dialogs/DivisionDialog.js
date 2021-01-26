@@ -82,7 +82,7 @@ export default function DivisionDialog({
   async function submitSaveDivisions() {
     try {
       const response = await axios.post(
-        `http://localhost:3006/api/v1/divisions/save`,
+        `http://59.26.51.139:4000/api/v1/divisions/save`,
         {
           divisions: divisions.map((item) => item.name),
           // userId: userId,
