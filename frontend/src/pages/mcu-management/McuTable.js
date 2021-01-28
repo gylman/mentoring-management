@@ -27,11 +27,12 @@ const useStyles = makeStyles({
   },
 });
 
-export default function UsersTable({
+export default function McuTable({
   columns,
   rows,
   setDeletionCandidate,
   handleDeleteDialog,
+  setServerDeletionCandiateName,
   setConfirmDialogState,
   confirmDialogState,
 }) {
@@ -80,10 +81,11 @@ export default function UsersTable({
                             style={{ width: "20px", height: "20px" }}
                             onClick={() => {
                               setDeletionCandidate(row["_id"]);
+                              // setServerDeletionCandiateName(row["name"]);
                               setConfirmDialogState({
                                 ...confirmDialogState,
                                 open: true,
-                                description: `Are you sure that you want to delete the user with id "${row["userId"]}"?`,
+                                description: `Are you sure that you want to delete the server named "${row["name"]}"?`,
                               });
                             }}
                           >

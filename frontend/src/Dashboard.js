@@ -7,6 +7,8 @@ import Status from "./pages/status/Status";
 import ServerDetails from "./pages/server-details/ServerDetails";
 import UserManagement from "./pages/user-management/UserManagement";
 import UserRegister from "./pages/user-register/UserRegister";
+import McuManagement from "./pages/mcu-management/McuManagement";
+import Statistics from "./pages/statistics/Statistics";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -23,6 +25,12 @@ function Dashboard({ setIsUserLoggedIn }) {
     <Switch>
       <Route exact path="/">
         <Status />
+      </Route>
+      <Route exact path="/mcu-management">
+        <McuManagement />
+      </Route>
+      <Route exact path="/statistics">
+        <Statistics />
       </Route>
       <Route exact path="/user-management">
         <UserManagement />

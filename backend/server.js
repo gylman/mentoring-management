@@ -18,7 +18,7 @@ mongoose
 
 const port = process.env.PORT || 3000;
 
-
- app.listen(port, () => {
-    console.log("Student manager app running");
-  });
+app.listen(port, (req, res) => {
+  console.log(req);
+  console.log("Student manager app running");
+});

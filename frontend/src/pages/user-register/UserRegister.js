@@ -43,7 +43,7 @@ function UserRegister() {
       try {
         const responseObj = {
           method: "get",
-          url: `http://59.26.51.139:4000/api/v1/divisions`,
+          url: `http://59.26.51.139:5555/api/v1/divisions`,
           // headers: headersObject,
           // cancelToken: source.token,
         };
@@ -119,7 +119,7 @@ function UserRegister() {
     try {
       setLoading(true);
       const response = await axios.post(
-        `http://59.26.51.139:4000/api/v1/users`,
+        `http://59.26.51.139:5555/api/v1/users`,
         {
           userId: userId.trim(),
           name: name,

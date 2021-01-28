@@ -2,6 +2,8 @@ const User = require("../models/UserModel");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const { promisify } = require("util");
+const sendEmail = require("../utils/email");
+const AppError = require("../utils/appError");
 
 exports.getUser = function (req, res) {
   res.status(200).json({ user: "Qilman", password: "12345678" });
@@ -11,6 +13,35 @@ const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE_TIME,
   });
+};
+exports.forgetPassword = async function (req, res, next) {
+  // res.status(200).json({ user: req.body.email });
+
+  const user = await User.findOne({ email: req.body.email });
+
+  // console.log(user);
+  if (!user) {
+    return next(new AppError("User email does not exist", 400));
+  }
+  const newPassword = crypto.randomBytes(4).toString("hex");
+
+  // await User.findByIdAndUpdate(user._id, { password: newPassword });
+
+  user.password = newPassword;
+
+  await user.save();
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: "Password / User ID Reset",
+      message: `Hello dear ${user.name}. It is seen you forget your password or user ID. We reseted for you, your id is: ${user.userId}, your password: ${newPassword}. Thanks.`,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+
+  res.status(200).json({ status: "success" });
 };
 
 exports.protect = async (req, res, next) => {

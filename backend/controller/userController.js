@@ -50,6 +50,6 @@ exports.deleteUser = async function (req, res) {
 
   res.status(204).json({
     status: "success",
-    users: null,
+    user: null,
   });
 };

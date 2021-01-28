@@ -70,45 +70,52 @@ const DialogActions = withStyles((theme) => ({
   },
 }))(MuiDialogActions);
 
-export default function DivisionDialog({
+export default function McuRegisterDialog({
   handleClose,
   open,
-  divisions,
-  updateDivisionsInLocal,
-  deleteDivisionsInLocal,
+  resetUseEffect,
 }) {
-  const [newDivsion, setNewDivision] = React.useState("");
+  const [name, setName] = React.useState("");
+  const [ip, setIp] = React.useState("");
 
-  async function submitSaveDivisions() {
+  function resetInputs() {
+    setName("");
+    setIp("");
+  }
+
+  async function submitCreateUser() {
     try {
       const response = await axios.post(
-        `http://59.26.51.139:3000/api/v1/divisions/save`,
+        `http://59.26.51.139:5555/api/v1/servers`,
         {
-          divisions: divisions.map((item) => item.name),
-          // userId: userId,
-          // password: password,
-          // userId: "12345678",
-          // password: "ee591301",
+          name,
+          ip,
         }
       );
 
       if (response.data.status === "success") {
+        resetUseEffect();
+        resetInputs();
       } else {
       }
     } catch (error) {
-      // setOpenAlert(true);
       console.log(error);
     }
   }
 
+  function closeDialogAndReset() {
+    handleClose();
+    resetInputs();
+  }
+
   return (
     <Dialog
-      onClose={handleClose}
+      onClose={closeDialogAndReset}
       aria-labelledby="customized-dialog-title"
       open={open}
     >
-      <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-        Division management
+      <DialogTitle id="customized-dialog-title" onClose={closeDialogAndReset}>
+        MCU Register
       </DialogTitle>
       <DialogContent dividers>
         <Grid
@@ -116,69 +123,46 @@ export default function DivisionDialog({
           style={{ minWidth: "500px" }}
           justify="center"
           spacing={2}
-          // flexDirection="column"
         >
           <Grid item xs={12}>
-            {/* <TextField fullWidth variant="outlined" placeholder="Personal id" /> */}
-            <Input
-              id="rename-input"
-              // type={values.showPassword ? "text" : "password"}
-              value={newDivsion}
-              onChange={(event) => setNewDivision(event.target.value)}
+            <TextField
+              size="small"
               fullWidth
-              autoFocus
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={() => {
-                      if (newDivsion.trim() === "") {
-                        return;
-                      } else {
-                        updateDivisionsInLocal(newDivsion);
-                        setNewDivision("");
-                      }
-                    }}
-                    // onMouseDown={handleMouseDownPassword}
-                  >
-                    <AddIcon />
-                  </IconButton>
-                </InputAdornment>
-              }
+              variant="outlined"
+              required
+              id="server-name"
+              label="Server name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              size="small"
+              fullWidth
+              variant="outlined"
+              required
+              id="ip"
+              label="IP"
+              type="text"
+              value={ip}
+              onChange={(e) => setIp(e.target.value)}
             />
           </Grid>
         </Grid>
-        <List style={{ marginTop: "10px", padding: 0 }}>
-          {divisions.map((division) => {
-            return (
-              <ListItem key={cuid()} style={{ padding: 0 }}>
-                <ListItemText primary={division.name} />
-                <ListItemSecondaryAction>
-                  <IconButton
-                    style={{ padding: 0, marginRight: "-3px" }}
-                    onClick={() => {
-                      deleteDivisionsInLocal(division.name);
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-            );
-          })}
-        </List>
       </DialogContent>
       <DialogActions>
         <Button
           autoFocus
           onClick={() => {
-            submitSaveDivisions();
+            submitCreateUser();
             handleClose();
           }}
           color="primary"
           variant="contained"
         >
-          Save
+          Register
         </Button>
       </DialogActions>
     </Dialog>

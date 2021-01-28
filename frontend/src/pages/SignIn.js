@@ -14,6 +14,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Logo from "../assets/images/logo.png";
 import { AuthContext } from "../context/authContext";
+import ForgetPassword from "../components/dialogs/ForgetPassword";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,6 +53,7 @@ function SignIn() {
   const history = useHistory();
   const [userId, setUserId] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [forgetPasswordState, setForgetPasswordState] = React.useState(false);
   const [password, setPassword] = React.useState("");
   const [openAlert, setOpenAlert] = React.useState(false);
   const auth = useContext(AuthContext);
@@ -67,12 +69,12 @@ function SignIn() {
     setLoading(true);
     try {
       const response = await axios.post(
-        `http://59.26.51.139:4000/api/v1/auth`,
+        `http://59.26.51.139:5555/api/v1/auth`,
         {
           userId: userId,
           password: password,
-          // userId: "12345678",
-          // password: "ee591301",
+          // userId: "abdulla",
+          // password: "f05b2da3",
         }
       );
 
@@ -178,7 +180,10 @@ function SignIn() {
         )}
         <Grid item container justify="center">
           <Grid item md={3}>
-            <Typography className={classes.forgotCredentials}>
+            <Typography
+              className={classes.forgotCredentials}
+              onClick={() => setForgetPasswordState(true)}
+            >
               forgot ID / password
             </Typography>
           </Grid>
@@ -194,8 +199,13 @@ function SignIn() {
             },
           }}
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
-          // onClose={() => setAlert({ ...alert, open: false })}
           autoHideDuration={2000}
+        />
+        <ForgetPassword
+          open={forgetPasswordState}
+          handleClose={() => {
+            setForgetPasswordState(false);
+          }}
         />
       </Grid>
     </>

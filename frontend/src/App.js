@@ -3,6 +3,7 @@ import Dashboard from "./Dashboard";
 import Landing from "./Landing";
 import { AuthContext } from "./context/authContext";
 import { CircularProgress, Grid } from "@material-ui/core";
+import "../node_modules/react-vis/dist/style.css";
 
 function App() {
   const [loading, setLoading] = useState(true);

@@ -55,7 +55,7 @@ function UserManagement() {
       try {
         const responseObj = {
           method: "get",
-          url: `http://59.26.51.139:4000/api/v1/users`,
+          url: `http://59.26.51.139:5555/api/v1/users`,
           // headers: headersObject,
           // cancelToken: source.token,
         };
@@ -125,7 +125,7 @@ function UserManagement() {
   async function confirmUserDelete() {
     try {
       const response = await axios.delete(
-        `http://59.26.51.139:4000/api/v1/users/${deletionCandidate}`
+        `http://59.26.51.139:5555/api/v1/users/${deletionCandidate}`
       );
       setConfirmDialogState({
         ...confirmDialogState,
@@ -134,7 +134,7 @@ function UserManagement() {
 
       // const response = await axios({
       //   method: "delete",
-      //   url: `${process.env.REACT_APP_API_URL}/api/v1/patients/updateDay`,
+      //   url: `http://59.26.51.139:5555/api/v1/patients/updateDay`,
       //   data: requestObject,
       //   headers: headersObject,
       // });
@@ -175,6 +175,8 @@ function UserManagement() {
             open: true,
           });
         }}
+        setConfirmDialogState={setConfirmDialogState}
+        confirmDialogState={confirmDialogState}
       />
       <SimpleConfirmDialog
         elements={confirmDialogState}
