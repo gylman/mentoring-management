@@ -57,9 +57,9 @@ function SignIn() {
   const [password, setPassword] = React.useState("");
 
   const [alert, setAlert] = React.useState({
-    message: "",
-    open: false,
-    color: "",
+    open: true,
+    color: "#f33336",
+    message: "Your password or user id is not correct!",
   });
 
   const auth = useContext(AuthContext);
@@ -68,8 +68,6 @@ function SignIn() {
     setAlert({
       ...alert,
       open: false,
-      color: "#f33336",
-      message: "Your password or user id is not correct!",
     });
   }
 

@@ -51,7 +51,6 @@ exports.changepassword = async function (req, res, next) {
   // const newPassword = crypto.randomBytes(4).toString("hex");
 
   // await User.findByIdAndUpdate(user._id, { password: newPassword });
-  
 
   if (
     !user ||
@@ -90,9 +89,8 @@ exports.protect = async (req, res, next) => {
 
   if (!token) {
     // return next(new AppError("authorization", 401));
-    return res
-      .status(401)
-      .json({ status: "fail", msg: "You do not have token" });
+
+    return next(new AppError("You do not have token", 401));
   }
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
@@ -104,9 +102,7 @@ exports.protect = async (req, res, next) => {
   // }
   if (!freshUser) {
     // return next(new AppError("authorization", 401));
-    res
-      .status(401)
-      .json({ status: "fail", msg: "this user is not longer available" });
+    return next(new AppError("this user is not longer available", 401));
   }
 
   //grant access
@@ -153,16 +149,6 @@ exports.signIn = async function (req, res) {
       .status(400)
       .json({ status: "fail", msg: "your userId or password is wrong" });
   }
-
-  // if (user) {
-  //   if (user.password === password) {
-  //     res
-  //       .status(200)
-  //       .json({ status: "success", message: "You are successfully logged in" });
-  //   } else {
-  //     res.status(401).json({ status: "fail", message: "Login failed" });
-  //   }
-  // }
 
   createTokenAndSignIn(user, 200, res);
 };
