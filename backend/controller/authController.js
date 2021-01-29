@@ -43,6 +43,38 @@ exports.forgetPassword = async function (req, res, next) {
 
   res.status(200).json({ status: "success" });
 };
+exports.changepassword = async function (req, res, next) {
+  // res.status(200).json({ user: req.body.email });
+
+  const user = await User.findOne({ userId: req.user.userId });
+
+  // const newPassword = crypto.randomBytes(4).toString("hex");
+
+  // await User.findByIdAndUpdate(user._id, { password: newPassword });
+  
+
+  if (
+    !user ||
+    !(await user.checkPassword(req.body.currentPassword, user.password))
+  ) {
+    return next(new AppError("Your current password is not correct", 400));
+  }
+
+  if (req.body.newPassword !== req.body.newPassword2) {
+    return next(
+      new AppError(
+        "Please check new password and second new password are the same ",
+        400
+      )
+    );
+  }
+
+  user.password = req.body.newPassword;
+
+  await user.save();
+
+  res.status(200).json({ status: "success" });
+};
 
 exports.protect = async (req, res, next) => {
   let token;

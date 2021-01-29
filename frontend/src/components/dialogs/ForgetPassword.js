@@ -57,7 +57,7 @@ const DialogActions = withStyles((theme) => ({
   },
 }))(MuiDialogActions);
 
-export default function ForgetPassword({ handleClose, open }) {
+export default function ForgetPassword({ handleClose, open, selAlert }) {
   const [email, setEmail] = React.useState("");
   async function submitForgetPassword() {
     try {
@@ -72,6 +72,12 @@ export default function ForgetPassword({ handleClose, open }) {
       );
 
       if (response.data.status === "success") {
+        selAlert({
+          color: "#00B848",
+          open: true,
+          message:
+            "We successfully emailed you your details, please check your email.",
+        });
       } else {
       }
     } catch (error) {

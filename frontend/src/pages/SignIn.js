@@ -55,16 +55,32 @@ function SignIn() {
   const [loading, setLoading] = React.useState(false);
   const [forgetPasswordState, setForgetPasswordState] = React.useState(false);
   const [password, setPassword] = React.useState("");
-  const [openAlert, setOpenAlert] = React.useState(false);
+
+  const [alert, setAlert] = React.useState({
+    message: "",
+    open: false,
+    color: "",
+  });
+
   const auth = useContext(AuthContext);
 
   function handleClose() {
-    setOpenAlert(false);
+    setAlert({
+      ...alert,
+      open: false,
+      color: "#f33336",
+      message: "Your password or user id is not correct!",
+    });
   }
 
   async function submitLoginForm() {
     if (!password.length || !userId.length) {
-      return setOpenAlert(true);
+      return setAlert({
+        ...alert,
+        open: true,
+        color: "#f33336",
+        message: "Your password or user id is not correct!",
+      });
     }
     setLoading(true);
     try {
@@ -73,8 +89,6 @@ function SignIn() {
         {
           userId: userId,
           password: password,
-          // userId: "abdulla",
-          // password: "f05b2da3",
         }
       );
 
@@ -93,8 +107,12 @@ function SignIn() {
       }
     } catch (error) {
       setLoading(false);
-      setOpenAlert(true);
-      console.log(error);
+      setAlert({
+        ...alert,
+        open: true,
+        color: "#f33336",
+        message: "Your password or user id is not correct!",
+      });
     }
   }
 
@@ -190,22 +208,25 @@ function SignIn() {
         </Grid>
         <Snackbar
           onClose={handleClose}
-          open={openAlert}
-          message="Your password or user id is not correct!"
+          open={alert.open}
+          // message="Your password or user id is not correct!"
+          message={alert.message}
           ContentProps={{
             style: {
               marginTop: "45px",
-              backgroundColor: "#FF3232",
+              backgroundColor: alert.color,
             },
           }}
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
           autoHideDuration={2000}
         />
+
         <ForgetPassword
           open={forgetPasswordState}
           handleClose={() => {
             setForgetPasswordState(false);
           }}
+          setAlert={setAlert}
         />
       </Grid>
     </>

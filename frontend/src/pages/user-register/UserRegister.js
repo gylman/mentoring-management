@@ -26,7 +26,7 @@ function UserRegister() {
   });
   const [loading, setLoading] = React.useState(false);
   const [name, setName] = React.useState("");
-  const [type, setType] = React.useState("");
+  const [type, setType] = React.useState("choose-one-option");
   const [phone, setPhone] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [address, setAddress] = React.useState("");
@@ -140,6 +140,7 @@ function UserRegister() {
         setEmail("");
         setAddress("");
         setSelectedDivision("choose-one-option");
+        setType("choose-one-option");
         setLoading(false);
       }
       if (response.data.status === "fail") {
@@ -213,7 +214,7 @@ function UserRegister() {
               }}
             >
               <MenuItem key={cuid()} value={"choose-one-option"}>
-                Choose one option *
+                Choose one option as a division*
               </MenuItem>
               {/* <option aria-label="None" value="" /> */}
               {divisions.map((item) => {
@@ -241,17 +242,35 @@ function UserRegister() {
       </Grid>
       <Grid item xs={12} container>
         <Grid item xs={5}>
-          <TextField
+          <Select
+            required
+            labelId="demo-customized-select-label"
+            id="demo-customized-select"
+            fullWidth
             value={type}
             onChange={(e) => setType(e.target.value)}
-            size="small"
-            fullWidth
-            variant="outlined"
-            label="Type"
-            required
-          />
+            variant="standard"
+            style={{
+              border: "1px solid rgba(0, 0, 0, 0.23)",
+              padding: "3px 14px",
+              borderRadius: "4px",
+            }}
+          >
+            <MenuItem key={cuid()} value={"choose-one-option"}>
+              Choose one option as a type *
+            </MenuItem>
+            {/* <option aria-label="None" value="" /> */}
+            {["student", "teacher", "admin", "business-owner"].map((item) => {
+              return (
+                <MenuItem key={cuid()} value={item}>
+                  {item}
+                </MenuItem>
+              );
+            })}
+          </Select>
         </Grid>
       </Grid>
+
       <Grid item xs={12} container>
         <Grid item xs={5}>
           <TextField
