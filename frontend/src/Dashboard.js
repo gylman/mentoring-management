@@ -9,6 +9,9 @@ import UserManagement from "./pages/user-management/UserManagement";
 import UserRegister from "./pages/user-register/UserRegister";
 import McuManagement from "./pages/mcu-management/McuManagement";
 import Statistics from "./pages/statistics/Statistics";
+import Profile from "./pages/profile/Profile";
+import DailyStatistics from "./pages/daily-statistics/DailyStatistics";
+import MonthlyStatistics from "./pages/monthly-statistics/MonthlyStatistics";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -40,6 +43,15 @@ function Dashboard({ setIsUserLoggedIn }) {
       </Route>
       <Route exact path="/add-user">
         <UserRegister />
+      </Route>
+      <Route exact path="/profile">
+        <Profile />
+      </Route>
+      <Route exact path="/daily-statistics/:userId">
+        <DailyStatistics />
+      </Route>
+      <Route exact path="/monthly-statistics/:userId">
+        <MonthlyStatistics />
       </Route>
     </Switch>
   );

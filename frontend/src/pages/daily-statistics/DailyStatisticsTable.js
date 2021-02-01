@@ -12,6 +12,7 @@ import TableRow from "@material-ui/core/TableRow";
 import IconButton from "@material-ui/core/IconButton";
 
 import DeleteIcon from "@material-ui/icons/Delete";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -22,14 +23,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function UsersTable({
-  columns,
-  rows,
-  setDeletionCandidate,
-  handleDeleteDialog,
-  setConfirmDialogState,
-  confirmDialogState,
-}) {
+export default function DailyStatisticsTable({ columns, rows }) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -65,30 +59,23 @@ export default function UsersTable({
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={cuid()}>
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                     {columns.map((column) => {
                       const value = row[column.extractor];
-                      return column.extractor === "delete" ? (
-                        <TableCell key={cuid()}>
-                          <IconButton
-                            aria-label="delete"
-                            style={{ width: "20px", height: "20px" }}
-                            onClick={() => {
-                              setDeletionCandidate(row["_id"]);
-                              setConfirmDialogState({
-                                ...confirmDialogState,
-                                open: true,
-                                description: `Are you sure that you want to delete the user with id "${row["userId"]}"?`,
-                              });
-                            }}
-                          >
-                            <DeleteIcon
-                              style={{ width: "20px", height: "20px" }}
-                            />
-                          </IconButton>
+                      return column.extractor === "daily-statistics" ? (
+                        <TableCell>
+                          <Link to={`/daily-statistics/${row["id"]}`}>
+                            Daily Statistics
+                          </Link>
+                        </TableCell>
+                      ) : column.extractor === "monthly-statistics" ? (
+                        <TableCell>
+                          <Link to={`/monthly-statistics/${row["id"]}`}>
+                            Monthly Statistics
+                          </Link>
                         </TableCell>
                       ) : (
-                        <TableCell key={cuid()} align="left">
+                        <TableCell key={column.id} align="left">
                           {value}
                         </TableCell>
                       );

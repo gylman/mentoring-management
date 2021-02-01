@@ -144,12 +144,21 @@ export default function NavigationPanel({ setIsUserLoggedIn }) {
           </List>
           <Divider />
           <List>
-            {[{ name: "Profile", icon: <PersonIcon /> }].map((item, index) => (
-              <ListItem button key={cuid()}>
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.name} />
-              </ListItem>
-            ))}
+            {[{ name: "Profile", path: "/profile", icon: <PersonIcon /> }].map(
+              (item, index) => (
+                <ListItem
+                  button
+                  key={cuid()}
+                  component={Link}
+                  to={item.path}
+                  onClick={() => setActiveOption(item.path)}
+                  selected={activeOption === item.path}
+                >
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.name} />
+                </ListItem>
+              )
+            )}
           </List>
         </div>
       </Drawer>

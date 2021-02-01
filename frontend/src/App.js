@@ -11,12 +11,14 @@ function App() {
   const [userId, setUserId] = useState("");
   const [userFullName, setUserFullName] = useState("");
   const [userStatus, setUserStatus] = useState("");
+  const [division, setDivision] = useState("");
 
-  const login = useCallback(({ token, id, fullName, status }) => {
+  const login = useCallback(({ token, id, fullName, status, division }) => {
     setToken(token);
     setUserId(id);
     setUserFullName(fullName);
     setUserStatus(status);
+    setDivision(division);
     localStorage.setItem(
       "userData",
       JSON.stringify({
@@ -24,6 +26,7 @@ function App() {
         token: token,
         fullName: fullName,
         status: status,
+        division: division,
       })
     );
   }, []);
@@ -45,6 +48,7 @@ function App() {
         notifications: [],
         fullName: storedData.fullName,
         status: storedData.status,
+        division: storedData.division,
       });
     }
     setLoading(false);
@@ -76,6 +80,7 @@ function App() {
         userId,
         fullName: userFullName,
         status: userStatus,
+        division: division,
       }}
     >
       {token ? <Dashboard /> : <Landing />}

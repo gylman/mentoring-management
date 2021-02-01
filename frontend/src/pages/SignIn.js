@@ -57,9 +57,9 @@ function SignIn() {
   const [password, setPassword] = React.useState("");
 
   const [alert, setAlert] = React.useState({
-    open: true,
-    color: "#f33336",
-    message: "Your password or user id is not correct!",
+    message: "",
+    open: false,
+    color: "",
   });
 
   const auth = useContext(AuthContext);
@@ -95,7 +95,8 @@ function SignIn() {
           token: response.data.token,
           id: response.data.user.userId,
           fullName: "Qilman",
-          status: "teacher",
+          status: response.data.user.status,
+          division: response.data.user.division,
         });
         setLoading(false);
         setUserId("");
@@ -207,7 +208,6 @@ function SignIn() {
         <Snackbar
           onClose={handleClose}
           open={alert.open}
-          // message="Your password or user id is not correct!"
           message={alert.message}
           ContentProps={{
             style: {

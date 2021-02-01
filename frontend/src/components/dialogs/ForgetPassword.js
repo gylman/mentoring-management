@@ -57,7 +57,7 @@ const DialogActions = withStyles((theme) => ({
   },
 }))(MuiDialogActions);
 
-export default function ForgetPassword({ handleClose, open, selAlert }) {
+export default function ForgetPassword({ handleClose, open, setAlert }) {
   const [email, setEmail] = React.useState("");
   async function submitForgetPassword() {
     try {
@@ -65,14 +65,13 @@ export default function ForgetPassword({ handleClose, open, selAlert }) {
         `http://59.26.51.139:5555/api/v1/auth/forgetpassword`,
         {
           email: email,
-
-          // userId: "abdulla",
-          // password: "f05b2da3",
         }
       );
-
+      console.log("====================================");
+      console.log(response);
+      console.log("====================================");
       if (response.data.status === "success") {
-        selAlert({
+        setAlert({
           color: "#00B848",
           open: true,
           message:
@@ -81,7 +80,11 @@ export default function ForgetPassword({ handleClose, open, selAlert }) {
       } else {
       }
     } catch (error) {
-      console.log(error);
+      setAlert({
+        color: "#f33336",
+        open: true,
+        message: error.response.data.message,
+      });
     }
   }
   return (

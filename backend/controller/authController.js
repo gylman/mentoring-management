@@ -24,7 +24,9 @@ exports.forgetPassword = async function (req, res, next) {
     return next(new AppError("User email does not exist", 400));
   }
   const newPassword = crypto.randomBytes(4).toString("hex");
-
+  console.log("====================================");
+  console.log(newPassword);
+  console.log("====================================");
   // await User.findByIdAndUpdate(user._id, { password: newPassword });
 
   user.password = newPassword;
@@ -32,11 +34,11 @@ exports.forgetPassword = async function (req, res, next) {
   await user.save();
 
   try {
-    await sendEmail({
-      email: user.email,
-      subject: "Password / User ID Reset",
-      message: `Hello dear ${user.name}. It is seen you forget your password or user ID. We reseted for you, your id is: ${user.userId}, your password: ${newPassword}. Thanks.`,
-    });
+    // await sendEmail({
+    //   email: user.email,
+    //   subject: "Password / User ID Reset",
+    //   message: `Hello dear ${user.name}. It is seen you forget your password or user ID. We reseted for you, your id is: ${user.userId}, your password: ${newPassword}. Thanks.`,
+    // });
   } catch (error) {
     console.log(error);
   }

@@ -5,6 +5,15 @@ const AppError = require("../utils/appError");
 exports.createUser = async function (req, res, next) {
   const password = crypto.randomBytes(4).toString("hex");
 
+  if (req.body.userId === "" || req.body.email === "") {
+    return next(
+      new AppError(
+        "Please make sure that all necesarry field are not empty",
+        400
+      )
+    );
+  }
+
   const userInDB = await User.findOne({ userId: req.body.userId });
 
   if (userInDB) {
@@ -15,7 +24,7 @@ exports.createUser = async function (req, res, next) {
     userId: req.body.userId,
     name: req.body.name,
     division: req.body.division,
-    type: req.body.type,
+    status: req.body.status,
     phone: req.body.phone,
     email: req.body.email,
     address: req.body.address,

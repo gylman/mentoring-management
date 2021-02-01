@@ -1,7 +1,7 @@
 import { Table } from "@material-ui/core";
 import React from "react";
 import cuid from "cuid";
-import CustomizedTables from "./StatusTable";
+import StatusTable from "./StatusTable";
 
 function Status() {
   const [dummyData, setDummyData] = React.useState([
@@ -27,24 +27,23 @@ function Status() {
 
     setDummyData(updatedDummyData);
   }
+
   const tableHeaders = [
-    { columnHeader: "MCU name" },
-    { columnHeader: "ID" },
-    { columnHeader: "Number of users" },
+    { label: "Server Name", extractor: "serverName" },
+    { label: "Server ID", extractor: "serverID" },
+    { label: "Number of users", extractor: "numOfUsers" },
   ];
 
   return (
     <>
-      <h1>MCU  list</h1>
-      <CustomizedTables
-        data={dummyData}
-        headers={tableHeaders}
+      <h1>MCU list</h1>
+      <StatusTable
+        rows={dummyData}
+        columns={tableHeaders}
         updateServerName={updateServerName}
       />
     </>
   );
 }
-
-// {data:dummyData, to: '/hhhh'}
 
 export default Status;

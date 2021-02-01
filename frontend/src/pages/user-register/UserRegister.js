@@ -9,13 +9,15 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import React from "react";
+import React, { useContext } from "react";
 import cuid from "cuid";
 import axios from "axios";
 import DivisionDialog from "../../components/dialogs/DivisionDialog";
 import SettingsIcon from "@material-ui/icons/Settings";
+import { AuthContext } from "../../context/authContext";
 
 function UserRegister() {
+  const auth = useContext(AuthContext);
   const [divisionPopUpState, setDivisionPopUpState] = React.useState(false);
   const [divisions, setDivisions] = React.useState([]);
   const [userId, setUserId] = React.useState("");
@@ -26,13 +28,27 @@ function UserRegister() {
   });
   const [loading, setLoading] = React.useState(false);
   const [name, setName] = React.useState("");
-  const [type, setType] = React.useState("choose-one-option");
+  const [type, setType] = React.useState(
+    auth.status === "instructor" ? "student" : "choose-one-option"
+  );
   const [phone, setPhone] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [address, setAddress] = React.useState("");
   const [selectedDivision, setSelectedDivision] = React.useState(
-    "choose-one-option"
+    auth.status === "manager" || auth.status === "instructor"
+      ? auth.division
+      : "choose-one-option"
   );
+
+  let userTypes;
+
+  if (auth.status === "administrator") {
+    userTypes = ["student", "instructor", "administrator", "manager"];
+  } else if (auth.status === "manager") {
+    userTypes = ["student", "manager", "instructor"];
+  } else if (auth.status === "instructor") {
+    userTypes = ["student"];
+  }
 
   React.useEffect(() => {
     async function getData() {
@@ -87,6 +103,12 @@ function UserRegister() {
   }
 
   async function registerUser() {
+    // if (auth.status === "manager" || auth.status === "instructor") {
+    //   setSelectedDivision(auth.division);
+    // }
+    if (auth.status === "instructor") {
+      setType("student");
+    }
     if (userId.length < 5) {
       return setAlert({
         open: true,
@@ -115,32 +137,32 @@ function UserRegister() {
         message: "division field is required, please choose one",
       });
     }
+    const requestObject = {
+      userId: userId.trim(),
+      name: name,
+      division: selectedDivision,
+      status: type,
+      phone: phone,
+      email: email,
+      address: address,
+    };
 
     try {
       setLoading(true);
       const response = await axios.post(
         `http://59.26.51.139:5555/api/v1/users`,
-        {
-          userId: userId.trim(),
-          name: name,
-          division: selectedDivision,
-          type: type,
-          phone: phone,
-          email: email,
-          address: address,
-        }
+        requestObject
       );
       // console.log(response);
 
       if (response.data.status === "success") {
         setUserId("");
         setName("");
-        setType("");
+        setType("choose-one-option");
         setPhone("");
         setEmail("");
         setAddress("");
         setSelectedDivision("choose-one-option");
-        setType("choose-one-option");
         setLoading(false);
       }
       if (response.data.status === "fail") {
@@ -152,20 +174,24 @@ function UserRegister() {
         });
       }
     } catch (error) {
-      console.log(error);
       setLoading(false);
-      setAlert({
-        open: true,
-        color: "#f33336",
-        message: error.response.data.message,
-      });
+
+      // setAlert({
+      //   open: true,
+      //   color: "#f33336",
+      //   message: error.response.data.message,
+      // });
     }
   }
 
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Typography variant="h5">User Registration</Typography>
+        <Typography variant="h5">
+          {auth.status === "instructor"
+            ? "Student Registration"
+            : "User Registration"}
+        </Typography>
       </Grid>
       <Grid item xs={12} container>
         <Grid item xs={5}>
@@ -192,20 +218,66 @@ function UserRegister() {
           />
         </Grid>
       </Grid>
-      <Grid item xs={12} container>
-        <Grid item xs={5}>
-          {divisions.length === 0 ? (
-            <Typography>No division</Typography>
-          ) : (
+      {auth.status === "administrator" ? (
+        <Grid item xs={12} container>
+          <Grid item xs={5}>
+            {divisions.length === 0 ? (
+              <Typography>No division</Typography>
+            ) : (
+              <Select
+                required
+                labelId="demo-customized-select-label"
+                id="demo-customized-select"
+                fullWidth
+                value={selectedDivision}
+                onChange={(event) => {
+                  setSelectedDivision(event.target.value);
+                }}
+                variant="standard"
+                style={{
+                  border: "1px solid rgba(0, 0, 0, 0.23)",
+                  padding: "3px 14px",
+                  borderRadius: "4px",
+                }}
+              >
+                <MenuItem key={cuid()} value={"choose-one-option"}>
+                  Choose one option as a division*
+                </MenuItem>
+                {/* <option aria-label="None" value="" /> */}
+                {divisions.map((item) => {
+                  return (
+                    <MenuItem key={cuid()} value={item.name}>
+                      {item.name}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            )}
+          </Grid>
+          <Grid xs={1} item container justify="center" alignItems="center">
+            <Grid item>
+              <IconButton
+                onClick={() => {
+                  setDivisionPopUpState(true);
+                }}
+                style={{ padding: 0, marginLeft: "-30px" }}
+              >
+                <SettingsIcon />
+              </IconButton>
+            </Grid>
+          </Grid>
+        </Grid>
+      ) : null}
+      {auth.status === "student" || auth.status === "instructor" ? null : (
+        <Grid item xs={12} container>
+          <Grid item xs={5}>
             <Select
               required
               labelId="demo-customized-select-label"
               id="demo-customized-select"
               fullWidth
-              value={selectedDivision}
-              onChange={(event) => {
-                setSelectedDivision(event.target.value);
-              }}
+              value={type}
+              onChange={(e) => setType(e.target.value)}
               variant="standard"
               style={{
                 border: "1px solid rgba(0, 0, 0, 0.23)",
@@ -214,62 +286,19 @@ function UserRegister() {
               }}
             >
               <MenuItem key={cuid()} value={"choose-one-option"}>
-                Choose one option as a division*
+                Choose one option as a type *
               </MenuItem>
-              {/* <option aria-label="None" value="" /> */}
-              {divisions.map((item) => {
+              {userTypes.map((item) => {
                 return (
-                  <MenuItem key={cuid()} value={item.name}>
-                    {item.name}
+                  <MenuItem key={cuid()} value={item}>
+                    {item}
                   </MenuItem>
                 );
               })}
             </Select>
-          )}
-        </Grid>
-        <Grid xs={1} item container justify="center" alignItems="center">
-          <Grid item>
-            <IconButton
-              onClick={() => {
-                setDivisionPopUpState(true);
-              }}
-              style={{ padding: 0, marginLeft: "-30px" }}
-            >
-              <SettingsIcon />
-            </IconButton>
           </Grid>
         </Grid>
-      </Grid>
-      <Grid item xs={12} container>
-        <Grid item xs={5}>
-          <Select
-            required
-            labelId="demo-customized-select-label"
-            id="demo-customized-select"
-            fullWidth
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-            variant="standard"
-            style={{
-              border: "1px solid rgba(0, 0, 0, 0.23)",
-              padding: "3px 14px",
-              borderRadius: "4px",
-            }}
-          >
-            <MenuItem key={cuid()} value={"choose-one-option"}>
-              Choose one option as a type *
-            </MenuItem>
-            {/* <option aria-label="None" value="" /> */}
-            {["student", "teacher", "admin", "business-owner"].map((item) => {
-              return (
-                <MenuItem key={cuid()} value={item}>
-                  {item}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </Grid>
-      </Grid>
+      )}
 
       <Grid item xs={12} container>
         <Grid item xs={5}>
@@ -356,7 +385,6 @@ function UserRegister() {
           },
         }}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        // onClose={() => setAlert({ ...alert, open: false })}
         autoHideDuration={2000}
       />
     </Grid>

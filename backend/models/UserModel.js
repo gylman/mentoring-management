@@ -14,10 +14,7 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
   },
-  type: {
-    type: String,
-    required: [true, "type is required"],
-  },
+
   phone: {
     type: String,
   },
@@ -27,6 +24,14 @@ const userSchema = new mongoose.Schema({
   },
   address: {
     type: String,
+  },
+  status: {
+    type: String,
+    required: [true, "status is required"],
+  },
+  division: {
+    type: String,
+    required: [true, "division is required"],
   },
 });
 
