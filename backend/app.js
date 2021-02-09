@@ -4,6 +4,8 @@ const userRoutes = require("./routes/userRoutes");
 const studentsRoutes = require("./routes/studentsRoutes");
 const divisionRoutes = require("./routes/divisionRoutes");
 const serverRoutes = require("./routes/serverRoutes");
+const entrancesRoutes = require("./routes/entrancesRoutes");
+const roomRoutes = require("./routes/roomRoutes");
 const connectionsRoutes = require("./routes/connectionsRoutes");
 const errorHandler = require("./controller/errorHandlerController");
 const AppError = require("./utils/appError");
@@ -29,6 +31,8 @@ app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/students", studentsRoutes);
 app.use("/api/v1/divisions", divisionRoutes);
 app.use("/api/v1/servers", serverRoutes);
+app.use("/api/v1/rooms", roomRoutes);
+app.use("/api/v1/entrances", entrancesRoutes);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`can not find ${req.originalUrl} route`, 404));

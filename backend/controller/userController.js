@@ -13,6 +13,9 @@ exports.createUser = async function (req, res, next) {
       )
     );
   }
+  console.log("====================================");
+  console.log(password);
+  console.log("====================================");
 
   const userInDB = await User.findOne({ userId: req.body.userId });
 
@@ -29,8 +32,10 @@ exports.createUser = async function (req, res, next) {
     email: req.body.email,
     address: req.body.address,
     password: password,
+    createdBy: req.user ? req.user.userId : "not given",
+    createdAt: Date.now(),
   };
-  console.log(password);
+
   try {
     const user = await User.create(userObject);
     if (user) {
@@ -42,7 +47,27 @@ exports.createUser = async function (req, res, next) {
 };
 
 exports.getUsers = async function (req, res) {
-  const users = await User.find({});
+  let filter = {};
+
+  if (req.user.status === "manager") {
+    filter.division = req.user.division;
+    filter.status = { $ne: "administrator" };
+  }
+  if (req.user.status === "instructor") {
+    // filter = { $or: [{ status: "student" }, {  }] };
+    filter.division = req.user.division;
+    filter.createdBy = req.user.userId;
+    filter.$nor = [
+      { status: "administrator" },
+      { status: "manager" },
+      { status: "instructor" },
+    ];
+  }
+  if (req.user.status === "student") {
+    filter = { status: "student", userId: req.user.userId };
+  }
+
+  let users = await User.find(filter).sort({ createdAt: -1 });
 
   res.status(200).json({
     status: "success",
@@ -60,5 +85,20 @@ exports.deleteUser = async function (req, res) {
   res.status(204).json({
     status: "success",
     user: null,
+  });
+};
+
+exports.getMe = async (req, res, next) => {
+  let user;
+
+  try {
+    user = await User.findOne({ userId: req.user.userId });
+  } catch (error) {
+    console.log(error);
+  }
+
+  res.status(200).json({
+    status: "success",
+    user: user,
   });
 };

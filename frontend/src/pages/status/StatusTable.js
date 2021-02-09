@@ -12,6 +12,7 @@ import TableRow from "@material-ui/core/TableRow";
 
 import { IconButton, Input, InputAdornment, Tooltip } from "@material-ui/core";
 import CheckIcon from "@material-ui/icons/Check";
+import DeleteIcon from "@material-ui/icons/Delete";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
@@ -26,12 +27,8 @@ const useStyles = makeStyles({
 export default function McuTable({
   columns,
   rows,
-  setDeletionCandidate,
-  handleDeleteDialog,
-  setServerDeletionCandiateName,
+  deleteOption,
   updateServerName,
-  setConfirmDialogState,
-  confirmDialogState,
 }) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
@@ -57,7 +54,7 @@ export default function McuTable({
               {columns.map((column) => (
                 <TableCell
                   key={cuid()}
-                  align="left"
+                  align={column.align}
                   // style={{ minWidth: column.minWidth }}
                 >
                   {column.label}
@@ -124,12 +121,34 @@ export default function McuTable({
                       </TableCell>
                     )}
 
-                    <TableCell align="left">
-                      <Link to={`server-details/${row.serverID}`}>
-                        {row.serverID}
+                    <TableCell align="center">
+                      <Link to={`server-details/${row.serverId}`}>
+                        {row.serverId}
                       </Link>
                     </TableCell>
-                    <TableCell align="left">{row.numOfUsers}</TableCell>
+
+                    <TableCell align="center">{row.numOfUsers}</TableCell>
+                    {deleteOption && (
+                      <TableCell align="center">
+                        <IconButton
+                          aria-label="delete"
+                          style={{ width: "20px", height: "20px" }}
+                          onClick={() => {
+                            // setDeletionCandidate(row["_id"]);
+                            // // setServerDeletionCandiateName(row["name"]);
+                            // setConfirmDialogState({
+                            //   ...confirmDialogState,
+                            //   open: true,
+                            //   description: `Are you sure that you want to delete the server named "${row["name"]}"?`,
+                            // });
+                          }}
+                        >
+                          <DeleteIcon
+                            style={{ width: "20px", height: "20px" }}
+                          />
+                        </IconButton>
+                      </TableCell>
+                    )}
                   </TableRow>
                 );
               })}

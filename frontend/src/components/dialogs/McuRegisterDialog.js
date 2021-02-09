@@ -1,5 +1,4 @@
 import React from "react";
-import cuid from "cuid";
 import axios from "axios";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -9,20 +8,9 @@ import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-import AddIcon from "@material-ui/icons/Add";
-import Typography from "@material-ui/core/Typography";
 
-import DeleteIcon from "@material-ui/icons/Delete";
-import {
-  Grid,
-  Input,
-  InputAdornment,
-  List,
-  ListItem,
-  ListItemSecondaryAction,
-  ListItemText,
-  TextField,
-} from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+import { Grid, TextField } from "@material-ui/core";
 
 const styles = (theme) => ({
   root: {
@@ -86,10 +74,10 @@ export default function McuRegisterDialog({
   async function submitCreateUser() {
     try {
       const response = await axios.post(
-        `http://59.26.51.139:5555/api/v1/servers`,
+        `http://59.26.51.139:5555/api/v1/servers/register-server`,
         {
-          name,
-          ip,
+          serverName: name,
+          serverIp: ip,
         }
       );
 

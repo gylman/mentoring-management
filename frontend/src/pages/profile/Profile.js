@@ -13,14 +13,45 @@ import { AuthContext } from "../../context/authContext";
 function Profile() {
   const auth = React.useContext(AuthContext);
   const [loading, setLoading] = React.useState("");
+  const [initialLoading, setInitialLoading] = React.useState(true);
   const [currentPassword, setCurrentPassword] = React.useState("");
   const [newPassword, setNewPassword] = React.useState("");
+  const [userId, setUserId] = React.useState("");
+  const [division, setDivision] = React.useState("");
   const [newPassword2, setNewPassword2] = React.useState("");
   const [alert, setAlert] = React.useState({
     message: "",
     open: false,
     color: "",
   });
+
+  React.useEffect(() => {
+    async function getData() {
+      const headersObject = {
+        "Content-Type": "application/json",
+        authorization: "Bearer " + auth.token,
+      };
+      try {
+        const responseObj = {
+          method: "get",
+          url: `http://59.26.51.139:5555/api/v1/users/profile`,
+          headers: headersObject,
+        };
+
+        const response = await axios(responseObj);
+
+        if (response.data.status === "success") {
+          setUserId(response.data.user.userId);
+          setDivision(response.data.user.division);
+          setInitialLoading(false);
+        }
+      } catch (error) {
+        setInitialLoading(false);
+      }
+    }
+
+    getData();
+  }, [auth.token]);
 
   async function submitLoginForm() {
     if (
@@ -77,8 +108,61 @@ function Profile() {
     }
   }
 
+  if (initialLoading) {
+    return (
+      <Grid
+        style={{ minHeight: "80vh" }}
+        container
+        justify="center"
+        alignItems="center"
+      >
+        <Grid item>
+          <CircularProgress />
+        </Grid>
+      </Grid>
+    );
+  }
+
   return (
     <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <Typography variant="h5">User Information</Typography>
+      </Grid>
+      <Grid item xs={12} container>
+        <Grid item xs={5}>
+          <TextField
+            value={userId}
+            // onChange={(e) => setCurrentPassword(e.target.value)}
+            size="small"
+            fullWidth
+            variant="outlined"
+            label="User ID:"
+            required
+            type="text"
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </Grid>
+      </Grid>
+      <Grid item xs={12} container>
+        <Grid item xs={5}>
+          <TextField
+            value={division}
+            // onChange={(e) => setCurrentPassword(e.target.value)}
+            InputProps={{
+              readOnly: true,
+            }}
+            size="small"
+            fullWidth
+            variant="outlined"
+            label="Division:"
+            required
+            type="text"
+          />
+        </Grid>
+      </Grid>
+
       <Grid item xs={12}>
         <Typography variant="h5">Reset your password</Typography>
       </Grid>

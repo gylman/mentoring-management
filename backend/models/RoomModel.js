@@ -1,14 +1,29 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
-const crypto = require("crypto");
 
-const divisionSchema = new mongoose.Schema({
-  name: {
+const roomSchema = new mongoose.Schema({
+  roomId: {
     type: String,
-    required: [true, "division name is required"],
+    required: [true, "roomId is required"],
   },
+  startTime: {
+    type: String,
+    // required: [true, "startTime name is required"],
+  },
+  endTime: {
+    type: String,
+    // required: [true, "endTime name is required"],
+  },
+  mcuId: {
+    type: String,
+    // required: [true, "endTime name is required"],
+  },
+  startTime: {
+    type: Date,
+    // required: [true, "endTime name is required"],
+  },
+  users: ["String"],
 });
 
-const Division = mongoose.model("Division", divisionSchema);
+const Room = mongoose.model("Room", roomSchema);
 
-module.exports = Division;
+module.exports = Room;

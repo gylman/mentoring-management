@@ -1,29 +1,103 @@
 import cuid from "cuid";
+import moment from "moment";
 import React from "react";
+import axios from "axios";
 import MonthlyStatisticsTable from "./MonthlyStatisticsTable";
+import DateFnsUtils from "@date-io/date-fns";
 import { Grid, TextField, Typography } from "@material-ui/core";
 import { useParams } from "react-router-dom";
+import { AuthContext } from "../../context/authContext";
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 
 function MonthlyStatistics() {
   const params = useParams();
-
-  const [dummyData, setDummyData] = React.useState([
-    {
-      date: "10-06-2020 16:00",
-      usage: "34",
-      id: cuid(),
-    },
-    {
-      date: "10-06-2020 16:00",
-      usage: "34",
-      id: cuid(),
-    },
-  ]);
-
+  const auth = React.useContext(AuthContext);
+  const [loading, setLoading] = React.useState(true);
+  const [sumOfUsedTime, setSumOfUsedTime] = React.useState("");
+  const [days, setDays] = React.useState([]);
+  const [date, setDate] = React.useState(new Date());
+  const [dummyData, setDummyData] = React.useState([]);
   const tableHeaders = [
-    { label: "Date", extractor: "date" },
-    { label: "Usage in mins", extractor: "usage" },
+    { label: "Date", extractor: "day" },
+    { label: "Usage in mins", extractor: "spentTime" },
   ];
+  console.log("====================================");
+  console.log(days);
+  console.log("====================================");
+  React.useEffect(() => {
+    async function getData() {
+      const headersObject = {
+        "Content-Type": "application/json",
+        authorization: "Bearer " + auth.token,
+      };
+      try {
+        const responseObj = {
+          method: "get",
+          url: `http://59.26.51.139:5555/api/v1/entrances/monthly/${params.userId}`,
+          headers: headersObject,
+          params: {
+            date: moment(new Date(date)).format("YYYY-MM-DD"),
+          },
+          // cancelToken: source.token,
+        };
+
+        const response = await axios(responseObj);
+
+        if (response.data.status === "success") {
+          const dayObj = {};
+          response.data.entrances.forEach((entrance) => {
+            if (!dayObj[`${moment(entrance.startTime).format("L")}`]) {
+              dayObj[`${moment(entrance.startTime).format("L")}`] =
+                new Date(entrance.startTime) - new Date(entrance.endTime);
+            } else {
+              console.log("else====================================");
+              console.log(dayObj[`${moment(entrance.startTime).format("L")}`]);
+              console.log(
+                dayObj[`${moment(entrance.startTime).format("L")}`] +
+                  (new Date(entrance.startTime) - new Date(entrance.endTime))
+              );
+              console.log("====================================");
+              dayObj[`${moment(entrance.startTime).format("L")}`] =
+                dayObj[`${moment(entrance.startTime).format("L")}`] +
+                (new Date(entrance.startTime) - new Date(entrance.endTime));
+            }
+          });
+          console.log("obj====================================");
+          console.log(dayObj);
+          console.log("====================================");
+          setLoading(false);
+          const days = [];
+
+          Object.keys(dayObj).map((key) => {
+            days.push({ day: key, spentTime: dayObj[key] });
+          });
+          setDays(days);
+
+          const tempTime = moment.duration(
+            -1 *
+              days.reduce((total, day) => {
+                return day.spentTime + total;
+              }, 0),
+            "milliseconds"
+          );
+          let hours = Math.floor(tempTime.asHours());
+          let mins = Math.floor(tempTime.asMinutes()) - hours * 60;
+
+          setSumOfUsedTime(hours + " h " + mins + " m");
+        }
+      } catch (error) {
+        // if () {
+        // // if (axios.isCancel(error)) {
+        //   //console.log("axios cancel error");
+        // } else {
+        setLoading(false);
+        console.log(error);
+        // }
+      }
+    }
+
+    getData();
+  }, [auth.token, date]);
 
   return (
     <Grid container>
@@ -41,15 +115,18 @@ function MonthlyStatistics() {
           <Typography variant="p">Date:</Typography>
         </Grid>
         <Grid>
-          <TextField
-            id="datetime-local"
-            type="datetime-local"
-            defaultValue="2017-05-24T10:30"
-            //   className={classes.textField}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <DatePicker
+              variant="inline"
+              openTo="year"
+              views={["year", "month"]}
+              // label="Year and Month"
+              // helperText="Start from year selection"
+              value={date}
+              onChange={setDate}
+              autoOk={true}
+            />
+          </MuiPickersUtilsProvider>
         </Grid>
       </Grid>
       <Grid item container style={{ margin: "10px" }} alignItems="center">
@@ -57,10 +134,14 @@ function MonthlyStatistics() {
           <Typography variant="p">Sum:</Typography>
         </Grid>
         <Grid>
-          <TextField id="datetime-local" defaultValue="34 hours" />
+          <Typography variant="p">{sumOfUsedTime}</Typography>
         </Grid>
       </Grid>
-      <MonthlyStatisticsTable rows={dummyData} columns={tableHeaders} />
+      <MonthlyStatisticsTable
+        rows={days}
+        columns={tableHeaders}
+        userId={params.userId}
+      />
     </Grid>
   );
 }

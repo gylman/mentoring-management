@@ -9,9 +9,6 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
-import IconButton from "@material-ui/core/IconButton";
-
-import DeleteIcon from "@material-ui/icons/Delete";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
@@ -64,13 +61,13 @@ export default function StatisticsTable({ columns, rows }) {
                       const value = row[column.extractor];
                       return column.extractor === "daily-statistics" ? (
                         <TableCell>
-                          <Link to={`/daily-statistics/${row["id"]}`}>
+                          <Link to={`/daily-statistics/${row["userId"]}`}>
                             Daily Statistics
                           </Link>
                         </TableCell>
                       ) : column.extractor === "monthly-statistics" ? (
                         <TableCell>
-                          <Link to={`/monthly-statistics/${row["id"]}`}>
+                          <Link to={`/monthly-statistics/${row["userId"]}`}>
                             Monthly Statistics
                           </Link>
                         </TableCell>

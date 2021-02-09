@@ -1,12 +1,12 @@
-import React from "react";
-import cuid from "cuid";
+import React, { useContext } from "react";
 import axios from "axios";
 import UsersTable from "./UsersTable";
-import { Button, Grid } from "@material-ui/core";
+import { Button, CircularProgress, Grid } from "@material-ui/core";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import RegisterUserDialog from "../../components/RegisterUserDialog";
 import { useHistory } from "react-router-dom";
 import SimpleConfirmDialog from "../../components/dialogs/SimpleConfirmDialog";
+import { AuthContext } from "../../context/authContext";
 // [
 //   {
 //     personalId: "59ad5139sa",
@@ -37,6 +37,7 @@ import SimpleConfirmDialog from "../../components/dialogs/SimpleConfirmDialog";
 function UserManagement() {
   const [isOpenRegisterDialog, setIsOpenRegisterDialog] = React.useState(false);
   const [users, setUsers] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
   const [deletionCandidate, setDeletionCandidate] = React.useState("");
   const [confirmDialogState, setConfirmDialogState] = React.useState({
     open: false,
@@ -45,18 +46,22 @@ function UserManagement() {
     confirm: "Confirm",
     cancel: "Cancel",
   });
+  const auth = useContext(AuthContext);
 
   React.useEffect(() => {
     async function getData() {
-      // const headersObject = {
-      //   "Content-Type": "application/json",
-      //   authorization: "Bearer " + auth.token,
-      // };
+      const headersObject = {
+        "Content-Type": "application/json",
+        authorization: "Bearer " + auth.token,
+      };
       try {
         const responseObj = {
           method: "get",
           url: `http://59.26.51.139:5555/api/v1/users`,
-          // headers: headersObject,
+          headers: headersObject,
+          params: {
+            status: auth.status,
+          },
           // cancelToken: source.token,
         };
 
@@ -65,7 +70,7 @@ function UserManagement() {
         if (response.data.status === "success") {
           setUsers(response.data.users);
 
-          // setLoading(false);
+          setLoading(false);
           // setPatients(response.data.patients);
         }
       } catch (error) {
@@ -73,18 +78,20 @@ function UserManagement() {
         // // if (axios.isCancel(error)) {
         //   //console.log("axios cancel error");
         // } else {
+
+        setLoading(false);
         console.log(error);
         // }
       }
     }
 
     getData();
-  }, [confirmDialogState]);
+  }, [confirmDialogState, auth.token]);
 
   const tableHeaders = [
     { label: "User ID", extractor: "userId" },
     { label: "Name", extractor: "name" },
-    { label: "Type", extractor: "type" },
+    { label: "Type", extractor: "status" },
     // { label: "Subject Name", extractor: "subjectName" },
     { label: "Contact Info", extractor: "phone" },
     { label: "Email", extractor: "email" },
@@ -115,6 +122,21 @@ function UserManagement() {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  if (loading) {
+    return (
+      <Grid
+        style={{ minHeight: "80vh" }}
+        container
+        justify="center"
+        alignItems="center"
+      >
+        <Grid item>
+          <CircularProgress />
+        </Grid>
+      </Grid>
+    );
   }
 
   return (

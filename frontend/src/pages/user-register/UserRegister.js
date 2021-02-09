@@ -45,22 +45,22 @@ function UserRegister() {
   if (auth.status === "administrator") {
     userTypes = ["student", "instructor", "administrator", "manager"];
   } else if (auth.status === "manager") {
-    userTypes = ["student", "manager", "instructor"];
+    userTypes = ["student", "instructor"];
   } else if (auth.status === "instructor") {
     userTypes = ["student"];
   }
 
   React.useEffect(() => {
     async function getData() {
-      // const headersObject = {
-      //   "Content-Type": "application/json",
-      //   authorization: "Bearer " + auth.token,
-      // };
+      const headersObject = {
+        "Content-Type": "application/json",
+        authorization: "Bearer " + auth.token,
+      };
       try {
         const responseObj = {
           method: "get",
           url: `http://59.26.51.139:5555/api/v1/divisions`,
-          // headers: headersObject,
+          headers: headersObject,
           // cancelToken: source.token,
         };
 
@@ -68,17 +68,9 @@ function UserRegister() {
 
         if (response.data.status === "success") {
           setDivisions(response.data.divisions);
-
-          // setLoading(false);
-          // setPatients(response.data.patients);
         }
       } catch (error) {
-        // if () {
-        // // if (axios.isCancel(error)) {
-        //   //console.log("axios cancel error");
-        // } else {
         console.log(error);
-        // }
       }
     }
 
@@ -145,25 +137,39 @@ function UserRegister() {
       phone: phone,
       email: email,
       address: address,
+      createdBy: auth.userId,
+    };
+    const headersObject = {
+      "Content-Type": "application/json",
+      authorization: "Bearer " + auth.token,
     };
 
     try {
       setLoading(true);
       const response = await axios.post(
         `http://59.26.51.139:5555/api/v1/users`,
-        requestObject
+        requestObject,
+        { headers: headersObject }
       );
-      // console.log(response);
 
       if (response.data.status === "success") {
         setUserId("");
         setName("");
-        setType("choose-one-option");
+        setType(auth.status === "instructor" ? "student" : "choose-one-option");
         setPhone("");
         setEmail("");
         setAddress("");
-        setSelectedDivision("choose-one-option");
+        setSelectedDivision(
+          auth.status === "manager" || auth.status === "instructor"
+            ? auth.division
+            : "choose-one-option"
+        );
         setLoading(false);
+        setAlert({
+          message: "User created successfully",
+          open: true,
+          color: "#00C851",
+        });
       }
       if (response.data.status === "fail") {
         setLoading(false);
@@ -175,12 +181,11 @@ function UserRegister() {
       }
     } catch (error) {
       setLoading(false);
-
-      // setAlert({
-      //   open: true,
-      //   color: "#f33336",
-      //   message: error.response.data.message,
-      // });
+      setAlert({
+        open: true,
+        color: "#f33336",
+        message: error.response.data.message,
+      });
     }
   }
 
@@ -391,4 +396,4 @@ function UserRegister() {
   );
 }
 
-export default UserRegister;
+export default React.memo(UserRegister);

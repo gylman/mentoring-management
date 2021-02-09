@@ -2,7 +2,7 @@ const crypto = require("crypto");
 const Server = require("../models/ServerModel");
 
 exports.getServers = async function (req, res) {
-  const servers = await Server.find({});
+  const servers = await Server.find({ registered: true });
 
   res.status(200).json({
     status: "success",
@@ -29,5 +29,28 @@ exports.deleteServer = async function (req, res) {
   res.status(204).json({
     status: "success",
     server: null,
+  });
+};
+
+exports.updateServer = async function (req, res) {
+  let server;
+
+  const serverId = req.body.serverIp.split(".").join("");
+
+  try {
+    server = await Server.findOne({ serverId });
+    if (req.body.serverName) {
+      server.serverName = req.body.serverName;
+    }
+    server.registered = true;
+
+    await server.save();
+  } catch (error) {
+    console.log(error);
+  }
+
+  res.status(200).json({
+    status: "success",
+    server: server,
   });
 };

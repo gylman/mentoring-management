@@ -14,7 +14,6 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
   },
-
   phone: {
     type: String,
   },
@@ -32,6 +31,12 @@ const userSchema = new mongoose.Schema({
   division: {
     type: String,
     required: [true, "division is required"],
+  },
+  createdBy: {
+    type: String,
+  },
+  createdAt: {
+    type: Date,
   },
 });
 

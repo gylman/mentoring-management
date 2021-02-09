@@ -10,8 +10,6 @@ import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
 import { Button } from "@material-ui/core";
 import Logo from "../assets/images/logo.png";
 import { Link, useHistory } from "react-router-dom";
@@ -47,7 +45,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   title: {
-    color: "black",
     fontSize: 35,
     fontWeight: "bold",
     color: "#003a76",
@@ -61,33 +58,46 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function NavigationPanel({ setIsUserLoggedIn }) {
+  const auth = useContext(AuthContext);
   const classes = useStyles();
   const history = useHistory();
-  const auth = useContext(AuthContext);
 
   const [activeOption, setActiveOption] = React.useState("");
-  const status = "administrator";
   let navigationPanelOptions;
-  if (status === "instructor") {
+  if (auth.status === "instructor" || auth.status === "manager") {
     navigationPanelOptions = [
-      { name: "Classroom registration" },
-      { name: "Usage information" },
-    ];
-  } else if (status === "administrator") {
-    navigationPanelOptions = [
-      { name: "Status", icon: <TrendingUpIcon />, path: "/", id: cuid() },
-      {
-        name: "MCU Management",
-        icon: <BuildIcon />,
-        path: "/mcu-management",
-        id: cuid(),
-      },
       {
         name: "User Management",
         icon: <PeopleIcon />,
         path: "/user-management",
         id: cuid(),
       },
+      {
+        name: "Statistics",
+        icon: <AssessmentIcon />,
+        path: "/statistics",
+        id: cuid(),
+      },
+    ];
+  } else if (auth.status === "administrator") {
+    navigationPanelOptions = [
+      { name: "Status", icon: <BuildIcon />, path: "/", id: cuid() },
+
+      {
+        name: "User Management",
+        icon: <PeopleIcon />,
+        path: "/user-management",
+        id: cuid(),
+      },
+      {
+        name: "Statistics",
+        icon: <AssessmentIcon />,
+        path: "/statistics",
+        id: cuid(),
+      },
+    ];
+  } else if (auth.status === "student") {
+    navigationPanelOptions = [
       {
         name: "Statistics",
         icon: <AssessmentIcon />,
@@ -128,7 +138,7 @@ export default function NavigationPanel({ setIsUserLoggedIn }) {
         <Toolbar />
         <div className={classes.drawerContainer}>
           <List>
-            {navigationPanelOptions.map((item) => (
+            {navigationPanelOptions?.map((item) => (
               <ListItem
                 onClick={() => setActiveOption(item.path)}
                 selected={activeOption === item.path}

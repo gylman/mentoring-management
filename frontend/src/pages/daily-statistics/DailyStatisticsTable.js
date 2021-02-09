@@ -1,4 +1,5 @@
 import React from "react";
+import moment from "moment";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import cuid from "cuid";
@@ -62,21 +63,12 @@ export default function DailyStatisticsTable({ columns, rows }) {
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                     {columns.map((column) => {
                       const value = row[column.extractor];
-                      return column.extractor === "daily-statistics" ? (
-                        <TableCell>
-                          <Link to={`/daily-statistics/${row["id"]}`}>
-                            Daily Statistics
-                          </Link>
-                        </TableCell>
-                      ) : column.extractor === "monthly-statistics" ? (
-                        <TableCell>
-                          <Link to={`/monthly-statistics/${row["id"]}`}>
-                            Monthly Statistics
-                          </Link>
-                        </TableCell>
-                      ) : (
+                      return (
                         <TableCell key={column.id} align="left">
-                          {value}
+                          {column.extractor === "startTime" ||
+                          column.extractor === "endTime"
+                            ? moment(value).format("LT")
+                            : value}
                         </TableCell>
                       );
                     })}

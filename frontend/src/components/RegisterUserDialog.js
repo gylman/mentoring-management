@@ -56,7 +56,12 @@ const DialogActions = withStyles((theme) => ({
   },
 }))(MuiDialogActions);
 
+
+
 export default function RegisterUserDialog({ handleClose, open }) {
+
+  
+
   return (
     <Dialog
       onClose={handleClose}
