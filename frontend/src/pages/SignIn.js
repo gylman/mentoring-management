@@ -101,7 +101,7 @@ function SignIn() {
         setLoading(false);
         setUserId("");
         setPassword("");
-        history.push("/");
+        history.push("/statistics");
       } else {
       }
     } catch (error) {

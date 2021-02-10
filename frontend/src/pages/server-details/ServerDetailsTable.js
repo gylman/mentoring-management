@@ -9,7 +9,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
-
+import moment from "moment";
 import { IconButton, Input, InputAdornment, Tooltip } from "@material-ui/core";
 import CheckIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -70,7 +70,9 @@ export default function McuTable({
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                     <TableCell align="left">{row.roomId}</TableCell>
 
-                    <TableCell align="center">{row.startTime}</TableCell>
+                    <TableCell align="center">
+                      {moment(row.startTime).format("LLL")}
+                    </TableCell>
                     <TableCell align="center">{row.users.length}</TableCell>
                   </TableRow>
                 );

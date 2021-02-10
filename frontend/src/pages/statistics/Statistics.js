@@ -2,7 +2,7 @@ import React from "react";
 import cuid from "cuid";
 import axios from "axios";
 import StatisticsTable from "./StatisticsTable";
-import { Typography } from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
 import { AuthContext } from "../../context/authContext";
 
 function Statistics() {
@@ -61,7 +61,9 @@ function Statistics() {
 
   return (
     <div>
-      <Typography>Statistics</Typography>
+      <Grid item>
+        <h1>Statistics</h1>
+      </Grid>
       <StatisticsTable rows={users} columns={tableHeaders} />
     </div>
   );

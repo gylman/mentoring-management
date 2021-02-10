@@ -9,7 +9,7 @@ function ServerDetails() {
   const auth = React.useContext(AuthContext);
   const tableHeaders = [
     { label: "Room ID", extractor: "roomId", align: "left" },
-    { label: "Start time", extractor: "name", align: "center" },
+    { label: "Start time", extractor: "startTime", align: "center" },
     { label: "Number of users", extractor: "status", align: "center" },
   ];
   const params = useParams();

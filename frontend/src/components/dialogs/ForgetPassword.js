@@ -64,7 +64,7 @@ export default function ForgetPassword({ handleClose, open, setAlert }) {
       const response = await axios.post(
         `http://59.26.51.139:5555/api/v1/auth/forgetpassword`,
         {
-          email: email,
+          email: email.trim(),
         }
       );
       console.log("====================================");

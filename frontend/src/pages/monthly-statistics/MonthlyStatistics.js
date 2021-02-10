@@ -42,7 +42,6 @@ function MonthlyStatistics() {
         };
 
         const response = await axios(responseObj);
-
         if (response.data.status === "success") {
           const dayObj = {};
           response.data.entrances.forEach((entrance) => {
@@ -50,21 +49,12 @@ function MonthlyStatistics() {
               dayObj[`${moment(entrance.startTime).format("L")}`] =
                 new Date(entrance.startTime) - new Date(entrance.endTime);
             } else {
-              console.log("else====================================");
-              console.log(dayObj[`${moment(entrance.startTime).format("L")}`]);
-              console.log(
-                dayObj[`${moment(entrance.startTime).format("L")}`] +
-                  (new Date(entrance.startTime) - new Date(entrance.endTime))
-              );
-              console.log("====================================");
               dayObj[`${moment(entrance.startTime).format("L")}`] =
                 dayObj[`${moment(entrance.startTime).format("L")}`] +
                 (new Date(entrance.startTime) - new Date(entrance.endTime));
             }
           });
-          console.log("obj====================================");
-          console.log(dayObj);
-          console.log("====================================");
+
           setLoading(false);
           const days = [];
 

@@ -1,4 +1,3 @@
-const crypto = require("crypto");
 const Server = require("../models/ServerModel");
 const Entrance = require("../models/EntranceModel");
 const Room = require("../models/RoomModel");
@@ -7,16 +6,12 @@ const User = require("../models/UserModel");
 exports.createConnection = async function (req, res) {
   const server = await Server.findOne({ serverId: req.body.mcuid });
   const room = await Room.findOne({ roomId: req.body.roomid });
-  const user = await User.findOne({ userId: req.body.userid });
 
   let newServer;
   let newRoom;
   let newEntrance;
 
   if (!room) {
-    console.log("====================================");
-    console.log("room in if");
-    console.log("====================================");
     newRoom = await Room.create({
       roomId: req.body.roomid,
       users: [req.body.userid],
@@ -71,11 +66,7 @@ exports.createConnection = async function (req, res) {
   }
 
   if (Number(req.body.type) === 0) {
-    // room.users.push(req.body.userid);
     if (room.users.length > 1) {
-      console.log("====================================");
-      console.log("if");
-      console.log("====================================");
       const newUsers = room.users.filter(
         (userid) => userid !== req.body.userid
       );
@@ -94,9 +85,6 @@ exports.createConnection = async function (req, res) {
 
       await userEntrance.save();
     } else {
-      console.log("====================================");
-      console.log("else");
-      console.log("====================================");
       await Room.deleteOne({ roomId: req.body.roomid });
       const newRooms = server.rooms.filter(
         (roomObj) => roomObj.roomid !== req.body.roomId

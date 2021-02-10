@@ -7,19 +7,15 @@ const roomSchema = new mongoose.Schema({
   },
   startTime: {
     type: String,
-    // required: [true, "startTime name is required"],
   },
   endTime: {
     type: String,
-    // required: [true, "endTime name is required"],
   },
   mcuId: {
     type: String,
-    // required: [true, "endTime name is required"],
   },
   startTime: {
     type: Date,
-    // required: [true, "endTime name is required"],
   },
   users: ["String"],
 });

@@ -11,18 +11,6 @@ const serverSchema = new mongoose.Schema({
     type: String,
     required: [true, "ip is required"],
   },
-  startLocation: [
-    {
-      type: {
-        type: String,
-        default: "Point",
-        enum: ["Point"],
-      },
-      coordinates: [Number],
-      address: String,
-      description: String,
-    },
-  ],
   registered: {
     type: Boolean,
     default: false,

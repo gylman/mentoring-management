@@ -15,30 +15,25 @@ const signToken = (id) => {
   });
 };
 exports.forgetPassword = async function (req, res, next) {
-  // res.status(200).json({ user: req.body.email });
-
   const user = await User.findOne({ email: req.body.email });
 
-  // console.log(user);
   if (!user) {
     return next(new AppError("User email does not exist", 400));
   }
   const newPassword = crypto.randomBytes(4).toString("hex");
   console.log("====================================");
-  console.log(newPassword);
+  console.log(`${user.name} reset his/or her password, new password: ${newPassword}, userID:  ${user.userId}`);
   console.log("====================================");
-  // await User.findByIdAndUpdate(user._id, { password: newPassword });
-
   user.password = newPassword;
 
   await user.save();
 
   try {
-    // await sendEmail({
-    //   email: user.email,
-    //   subject: "Password / User ID Reset",
-    //   message: `Hello dear ${user.name}. It is seen you forget your password or user ID. We reseted for you, your id is: ${user.userId}, your password: ${newPassword}. Thanks.`,
-    // });
+    await sendEmail({
+      email: user.email,
+      subject: "Password / User ID Reset",
+      message: `Hello dear ${user.name}. It seems you requested to reset your password or user ID. We reset it for you, your id is: ${user.userId}, your password: ${newPassword}`,
+    });
   } catch (error) {
     console.log(error);
   }
@@ -46,13 +41,7 @@ exports.forgetPassword = async function (req, res, next) {
   res.status(200).json({ status: "success" });
 };
 exports.changepassword = async function (req, res, next) {
-  // res.status(200).json({ user: req.body.email });
-
   const user = await User.findOne({ userId: req.user.userId });
-
-  // const newPassword = crypto.randomBytes(4).toString("hex");
-
-  // await User.findByIdAndUpdate(user._id, { password: newPassword });
 
   if (
     !user ||
@@ -85,13 +74,8 @@ exports.protect = async (req, res, next) => {
   ) {
     token = req.headers.authorization.split(" ")[1];
   }
-  // else if (req.cookies.jwt) {
-  //   token = req.cookies.jwt;
-  // }
 
   if (!token) {
-    // return next(new AppError("authorization", 401));
-
     return next(new AppError("You do not have token", 401));
   }
 
@@ -99,15 +83,10 @@ exports.protect = async (req, res, next) => {
 
   const freshUser = await User.findById(decoded.id);
 
-  // if (!freshUser) {
-  //   return next(new AppError("this user is not longer available", 401));
-  // }
   if (!freshUser) {
-    // return next(new AppError("authorization", 401));
     return next(new AppError("this user is not longer available", 401));
   }
 
-  //grant access
   req.user = freshUser;
   res.locals.user = freshUser; /* we also need this one in get me page */
   next();
@@ -134,22 +113,23 @@ const createTokenAndSignIn = (user, statusCode, res) => {
   });
 };
 
-exports.signIn = async function (req, res) {
+exports.signIn = async function (req, res, next) {
   const userId = req.body.userId;
   const password = req.body.password;
+  let user;
 
   if (!userId || !password) {
-    res
-      .status(400)
-      .json({ status: "fail", msg: "you should provide userId and password" });
+    return next(new AppError("you should provide userId and password", 400));
   }
 
-  const user = await User.findOne({ userId: userId });
+  try {
+    user = await User.findOne({ userId: userId });
+  } catch (error) {
+    console.log(error);
+  }
 
   if (!user || !(await user.checkPassword(password, user.password))) {
-    res
-      .status(400)
-      .json({ status: "fail", msg: "your userId or password is wrong" });
+    return next(new AppError("you should provide userId and password", 400));
   }
 
   createTokenAndSignIn(user, 200, res);

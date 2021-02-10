@@ -56,6 +56,7 @@ function Dashboard({ setIsUserLoggedIn }) {
         <Route exact path="/monthly-statistics/:userId">
           <MonthlyStatistics />
         </Route>
+        <Redirect to="/statistics" />
       </Switch>
     );
   } else if (auth.status === "manager" || auth.status === "instructor") {
@@ -79,7 +80,7 @@ function Dashboard({ setIsUserLoggedIn }) {
         <Route exact path="/monthly-statistics/:userId">
           <MonthlyStatistics />
         </Route>
-        <Redirect to="/user-management" />
+        <Redirect to="/statistics" />
       </Switch>
     );
   } else if (auth.status === "student") {
@@ -97,6 +98,7 @@ function Dashboard({ setIsUserLoggedIn }) {
         <Route exact path="/monthly-statistics/:userId">
           <MonthlyStatistics />
         </Route>
+        <Redirect to="/statistics" />
       </Switch>
     );
   }

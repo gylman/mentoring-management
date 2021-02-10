@@ -9,7 +9,7 @@ const sendEmail = async (options) => {
     },
   });
   const mailOptions = {
-    from: "Insure Language Center <teachmeteam.az@gmail.com>",
+    from: "Wooksung Media <wooksungm@gmail.com>",
     to: options.email,
     subject: options.subject,
     text: options.message,

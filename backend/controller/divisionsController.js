@@ -1,4 +1,4 @@
-const crypto = require("crypto");
+
 const Division = require("../models/DivisionModel");
 
 exports.getDivisions = async function (req, res) {
@@ -21,8 +21,6 @@ exports.createDivision = async function (req, res) {
 
 exports.saveDivisions = async function (req, res) {
   const divisions = req.body.divisions;
-
-  // const division = await Division.create({ name });
 
   const existedDivisions = await Division.find();
 

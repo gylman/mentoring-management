@@ -18,6 +18,7 @@ function Profile() {
   const [newPassword, setNewPassword] = React.useState("");
   const [userId, setUserId] = React.useState("");
   const [division, setDivision] = React.useState("");
+  const [status, setStatus] = React.useState("");
   const [newPassword2, setNewPassword2] = React.useState("");
   const [alert, setAlert] = React.useState({
     message: "",
@@ -43,6 +44,7 @@ function Profile() {
         if (response.data.status === "success") {
           setUserId(response.data.user.userId);
           setDivision(response.data.user.division);
+          setStatus(response.data.user.status);
           setInitialLoading(false);
         }
       } catch (error) {
@@ -157,6 +159,23 @@ function Profile() {
             fullWidth
             variant="outlined"
             label="Division:"
+            required
+            type="text"
+          />
+        </Grid>
+      </Grid>
+      <Grid item xs={12} container>
+        <Grid item xs={5}>
+          <TextField
+            value={status}
+            // onChange={(e) => setCurrentPassword(e.target.value)}
+            InputProps={{
+              readOnly: true,
+            }}
+            size="small"
+            fullWidth
+            variant="outlined"
+            label="Type:"
             required
             type="text"
           />

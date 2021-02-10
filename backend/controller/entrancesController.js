@@ -1,4 +1,4 @@
-const crypto = require("crypto");
+
 const Entrance = require("../models/EntranceModel");
 
 exports.getEntrances = async function (req, res) {
@@ -22,9 +22,6 @@ exports.getEntrances = async function (req, res) {
 exports.getMonthlyEntrances = async function (req, res) {
   let entrances;
   const date = new Date(req.query.date);
-
-  console.log("day 1", new Date(date.getFullYear(), date.getMonth(), 1));
-  console.log("day 2", new Date(date.getFullYear(), date.getMonth() + 1, 0));
 
   entrances = await Entrance.aggregate([
     {
