@@ -51,6 +51,8 @@ function UserRegister() {
   }
 
   React.useEffect(() => {
+    const source = axios.CancelToken.source();
+
     async function getData() {
       const headersObject = {
         "Content-Type": "application/json",
@@ -61,7 +63,7 @@ function UserRegister() {
           method: "get",
           url: `http://59.26.51.139:5555/api/v1/divisions`,
           headers: headersObject,
-          // cancelToken: source.token,
+          cancelToken: source.token,
         };
 
         const response = await axios(responseObj);
@@ -70,12 +72,18 @@ function UserRegister() {
           setDivisions(response.data.divisions);
         }
       } catch (error) {
-        console.log(error);
+        if (axios.isCancel(error)) {
+          //console.log("axios cancel error");
+        } else {
+          console.log(error);
+        }
       }
     }
 
     getData();
-  }, []);
+
+    return source.cancel;
+  }, [auth.token]);
 
   function updateDivisionsInLocal(divisionName) {
     setDivisions([
@@ -123,6 +131,13 @@ function UserRegister() {
       });
     }
     if (selectedDivision === "choose-one-option") {
+      return setAlert({
+        open: true,
+        color: "#f33336",
+        message: "division field is required, please choose one",
+      });
+    }
+    if (type === "choose-one-option") {
       return setAlert({
         open: true,
         color: "#f33336",
@@ -246,7 +261,7 @@ function UserRegister() {
                 }}
               >
                 <MenuItem key={cuid()} value={"choose-one-option"}>
-                  Choose one option as a division*
+                  Choose one option as a division *
                 </MenuItem>
                 {/* <option aria-label="None" value="" /> */}
                 {divisions.map((item) => {
@@ -378,6 +393,7 @@ function UserRegister() {
         handleClose={() => {
           setDivisionPopUpState(false);
         }}
+        auth={auth}
       />
       <Snackbar
         onClose={() => setAlert({ ...alert, open: false })}

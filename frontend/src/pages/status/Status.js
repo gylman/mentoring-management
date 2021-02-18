@@ -1,22 +1,32 @@
 import React from "react";
-import cuid from "cuid";
 import axios from "axios";
 import StatusTable from "./StatusTable";
 import AddToQueueIcon from "@material-ui/icons/AddToQueue";
 import { Button, CircularProgress, Grid } from "@material-ui/core";
 import McuRegisterDialog from "../../components/dialogs/McuRegisterDialog";
+import SimpleConfirmDialog from "../../components/dialogs/SimpleConfirmDialog";
 import { AuthContext } from "../../context/authContext";
 
 function Status() {
   const [mcuDialogState, setMcuDialogState] = React.useState(false);
   const [refreshState, setRefreshState] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
+  const [deletionCandidate, setDeletionCandidate] = React.useState("");
+  const [deletionCandidateName, setDeletionCandidateName] = React.useState("");
+  const [confirmDialogState, setConfirmDialogState] = React.useState({
+    open: false,
+    title: "Server deletion",
+    description: "Are you sure that you want to delete this user",
+    confirm: "Confirm",
+    cancel: "Cancel",
+  });
 
   function resetUseEffect() {
     setRefreshState(!refreshState);
   }
 
   const auth = React.useContext(AuthContext);
+
   const [servers, setServers] = React.useState([]);
 
   React.useEffect(() => {
@@ -53,18 +63,44 @@ function Status() {
     getData();
   }, [auth.token, refreshState]);
 
-  function updateServerName(id, newServerName) {
-    // const updatedDummyData = dummyData.map((item) => {
-    //   if (item.id === id) {
-    //     return {
-    //       ...item,
-    //       serverName: newServerName,
-    //     };
-    //   } else {
-    //     return item;
-    //   }
-    // });
-    // setDummyData(updatedDummyData);
+  async function updateServerName(id, newServerName) {
+    const headersObject = {
+      "Content-Type": "application/json",
+      authorization: "Bearer " + auth.token,
+    };
+    try {
+      const response = await axios.post(
+        `http://59.26.51.139:5555/api/v1/servers/update-server-name`,
+        {
+          serverName: newServerName,
+          serverId: id,
+        },
+        { headers: headersObject }
+      );
+
+      if (response.data.status === "success") {
+        resetUseEffect();
+      }
+    } catch (error) {
+      // setOpenAlert(true);
+      console.log(error);
+    }
+  }
+  async function confirmServerDelete() {
+    try {
+      await axios.delete(
+        `http://59.26.51.139:5555/api/v1/servers/${deletionCandidate}`
+      );
+
+      setConfirmDialogState({
+        ...confirmDialogState,
+        open: false,
+      });
+
+      resetUseEffect();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   let tableHeaders;
@@ -122,6 +158,10 @@ function Status() {
         columns={tableHeaders}
         updateServerName={updateServerName}
         deleteOption={auth.status === "administrator"}
+        setDeletionCandidate={setDeletionCandidate}
+        setConfirmDialogState={setConfirmDialogState}
+        confirmDialogState={confirmDialogState}
+        setDeletionCandidateName={setDeletionCandidateName}
       />
       <McuRegisterDialog
         open={mcuDialogState}
@@ -129,6 +169,17 @@ function Status() {
         handleClose={() => {
           setMcuDialogState(false);
         }}
+      />
+      <SimpleConfirmDialog
+        elements={confirmDialogState}
+        open={confirmDialogState.open}
+        handleClose={() => {
+          setConfirmDialogState({
+            ...confirmDialogState,
+            open: false,
+          });
+        }}
+        handleConfirm={confirmServerDelete}
       />
     </>
   );

@@ -1,7 +1,6 @@
 const crypto = require("crypto");
 const User = require("../models/UserModel");
 const AppError = require("../utils/appError");
-const sendEmail = require("../utils/email");
 
 exports.createUser = async function (req, res, next) {
   const password = crypto.randomBytes(4).toString("hex");
@@ -39,14 +38,12 @@ exports.createUser = async function (req, res, next) {
 
   try {
     const user = await User.create(userObject);
-
     if (user) {
       await sendEmail({
         email: user.email,
         subject: "Your account details",
         message: `Hello dear ${user.name}. Your id:  ${user.userId}, your password: ${password}`,
       });
-
       res.status(200).json({ status: "success", data: user });
     }
   } catch (error) {
@@ -108,5 +105,18 @@ exports.getMe = async (req, res, next) => {
   res.status(200).json({
     status: "success",
     user: user,
+  });
+};
+exports.updateEmail = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+    user.email = req.body.email;
+    user.save();
+  } catch (error) {
+    console.log(error);
+  }
+
+  res.status(200).json({
+    status: "success",
   });
 };

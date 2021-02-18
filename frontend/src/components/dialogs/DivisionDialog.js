@@ -21,7 +21,6 @@ import {
   ListItem,
   ListItemSecondaryAction,
   ListItemText,
-  TextField,
 } from "@material-ui/core";
 
 const styles = (theme) => ({
@@ -76,20 +75,22 @@ export default function DivisionDialog({
   divisions,
   updateDivisionsInLocal,
   deleteDivisionsInLocal,
+  auth,
 }) {
   const [newDivsion, setNewDivision] = React.useState("");
 
   async function submitSaveDivisions() {
+    const headersObject = {
+      "Content-Type": "application/json",
+      authorization: "Bearer " + auth.token,
+    };
     try {
       const response = await axios.post(
         `http://59.26.51.139:5555/api/v1/divisions/save`,
         {
           divisions: divisions.map((item) => item.name),
-          // userId: userId,
-          // password: password,
-          // userId: "12345678",
-          // password: "ee591301",
-        }
+        },
+        { headers: headersObject }
       );
 
       if (response.data.status === "success") {
@@ -116,13 +117,10 @@ export default function DivisionDialog({
           style={{ minWidth: "500px" }}
           justify="center"
           spacing={2}
-          // flexDirection="column"
         >
           <Grid item xs={12}>
-            {/* <TextField fullWidth variant="outlined" placeholder="Personal id" /> */}
             <Input
               id="rename-input"
-              // type={values.showPassword ? "text" : "password"}
               value={newDivsion}
               onChange={(event) => setNewDivision(event.target.value)}
               fullWidth
@@ -139,7 +137,6 @@ export default function DivisionDialog({
                         setNewDivision("");
                       }
                     }}
-                    // onMouseDown={handleMouseDownPassword}
                   >
                     <AddIcon />
                   </IconButton>

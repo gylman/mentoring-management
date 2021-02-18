@@ -18,6 +18,15 @@ const useStyles = makeStyles({
   container: {
     maxHeight: 440,
   },
+  link: {
+    color: "rgb(0, 0, 238)",
+    "&:hover": {
+      color: "rgb(0, 0, 238)",
+    },
+    "&:visited": {
+      color: "rgb(0, 0, 238)",
+    },
+  },
 });
 
 export default function StatisticsTable({ columns, rows }) {
@@ -41,11 +50,7 @@ export default function StatisticsTable({ columns, rows }) {
           <TableHead>
             <TableRow>
               {columns.map((column) => (
-                <TableCell
-                  key={cuid()}
-                  align="left"
-                  // style={{ minWidth: column.minWidth }}
-                >
+                <TableCell key={cuid()} align="left">
                   {column.label}
                 </TableCell>
               ))}
@@ -56,23 +61,29 @@ export default function StatisticsTable({ columns, rows }) {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                  <TableRow hover role="checkbox" tabIndex={-1} key={cuid()}>
                     {columns.map((column) => {
                       const value = row[column.extractor];
                       return column.extractor === "daily-statistics" ? (
-                        <TableCell>
-                          <Link to={`/daily-statistics/${row["userId"]}`}>
+                        <TableCell key={cuid()}>
+                          <Link
+                            to={`/daily-statistics/${row["userId"]}`}
+                            className={classes.link}
+                          >
                             Daily Statistics
                           </Link>
                         </TableCell>
                       ) : column.extractor === "monthly-statistics" ? (
-                        <TableCell>
-                          <Link to={`/monthly-statistics/${row["userId"]}`}>
+                        <TableCell key={cuid()}>
+                          <Link
+                            to={`/monthly-statistics/${row["userId"]}`}
+                            className={classes.link}
+                          >
                             Monthly Statistics
                           </Link>
                         </TableCell>
                       ) : (
-                        <TableCell key={column.id} align="left">
+                        <TableCell align="left" key={cuid()}>
                           {value}
                         </TableCell>
                       );

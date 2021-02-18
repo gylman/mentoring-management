@@ -1,8 +1,7 @@
 import React from "react";
-import cuid from "cuid";
 import axios from "axios";
 import StatisticsTable from "./StatisticsTable";
-import { Grid, Typography } from "@material-ui/core";
+import { CircularProgress, Grid } from "@material-ui/core";
 import { AuthContext } from "../../context/authContext";
 
 function Statistics() {
@@ -27,12 +26,7 @@ function Statistics() {
           method: "get",
           url: `http://59.26.51.139:5555/api/v1/users`,
           headers: headersObject,
-          params: {
-            status:
-              auth.status === "instructor"
-                ? "student"
-                : "student and instructor",
-          },
+
           // cancelToken: source.token,
         };
 
@@ -59,6 +53,20 @@ function Statistics() {
     getData();
   }, [auth.token]);
 
+  if (loading) {
+    return (
+      <Grid
+        style={{ minHeight: "80vh" }}
+        container
+        justify="center"
+        alignItems="center"
+      >
+        <Grid item>
+          <CircularProgress />
+        </Grid>
+      </Grid>
+    );
+  }
   return (
     <div>
       <Grid item>

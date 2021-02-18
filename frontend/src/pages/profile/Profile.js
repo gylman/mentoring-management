@@ -17,6 +17,7 @@ function Profile() {
   const [currentPassword, setCurrentPassword] = React.useState("");
   const [newPassword, setNewPassword] = React.useState("");
   const [userId, setUserId] = React.useState("");
+  const [email, setEmail] = React.useState("");
   const [division, setDivision] = React.useState("");
   const [status, setStatus] = React.useState("");
   const [newPassword2, setNewPassword2] = React.useState("");
@@ -45,6 +46,7 @@ function Profile() {
           setUserId(response.data.user.userId);
           setDivision(response.data.user.division);
           setStatus(response.data.user.status);
+          setEmail(response.data.user.email);
           setInitialLoading(false);
         }
       } catch (error) {
@@ -55,7 +57,7 @@ function Profile() {
     getData();
   }, [auth.token]);
 
-  async function submitLoginForm() {
+  async function submitResetForm() {
     if (
       !currentPassword.length ||
       !newPassword.length ||
@@ -109,6 +111,51 @@ function Profile() {
       });
     }
   }
+  async function submitEmailForm() {
+    if (!email.length) {
+      return setAlert({
+        ...alert,
+        open: true,
+        color: "#f33336",
+        message: "email can not be empty",
+      });
+    }
+    setLoading(true);
+
+    const headersObject = {
+      "Content-Type": "application/json",
+      authorization: "Bearer " + auth.token,
+    };
+
+    const requestObject = {
+      email: email.trim(),
+    };
+    try {
+      const response = await axios.post(
+        `http://59.26.51.139:5555/api/v1/auth/update-email`,
+        requestObject,
+        { headers: headersObject }
+      );
+
+      if (response.data.status === "success") {
+        setLoading(false);
+        return setAlert({
+          ...alert,
+          open: true,
+          color: "#00C851",
+          message: "Your email is successfully changed",
+        });
+      }
+    } catch (error) {
+      setLoading(false);
+      setAlert({
+        ...alert,
+        open: true,
+        color: "#f33336",
+        message: error.response.data.message,
+      });
+    }
+  }
 
   if (initialLoading) {
     return (
@@ -134,7 +181,6 @@ function Profile() {
         <Grid item xs={5}>
           <TextField
             value={userId}
-            // onChange={(e) => setCurrentPassword(e.target.value)}
             size="small"
             fullWidth
             variant="outlined"
@@ -151,7 +197,6 @@ function Profile() {
         <Grid item xs={5}>
           <TextField
             value={division}
-            // onChange={(e) => setCurrentPassword(e.target.value)}
             InputProps={{
               readOnly: true,
             }}
@@ -168,7 +213,6 @@ function Profile() {
         <Grid item xs={5}>
           <TextField
             value={status}
-            // onChange={(e) => setCurrentPassword(e.target.value)}
             InputProps={{
               readOnly: true,
             }}
@@ -182,6 +226,36 @@ function Profile() {
         </Grid>
       </Grid>
 
+      <Grid item xs={12}>
+        <Typography variant="h5">Update email</Typography>
+      </Grid>
+      <Grid item xs={12} container>
+        <Grid item xs={5}>
+          <TextField
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            size="small"
+            fullWidth
+            variant="outlined"
+            label="Email:"
+            required
+            type="text"
+          />
+        </Grid>
+      </Grid>
+      <Grid item xs={6}>
+        {!loading && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              submitEmailForm();
+            }}
+          >
+            Update email
+          </Button>
+        )}
+      </Grid>
       <Grid item xs={12}>
         <Typography variant="h5">Reset your password</Typography>
       </Grid>
@@ -245,7 +319,7 @@ function Profile() {
             variant="contained"
             color="primary"
             onClick={() => {
-              submitLoginForm();
+              submitResetForm();
             }}
           >
             Submit

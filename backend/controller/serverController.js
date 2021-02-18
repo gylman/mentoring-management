@@ -54,3 +54,22 @@ exports.updateServer = async function (req, res) {
     server: server,
   });
 };
+exports.updateServerName = async function (req, res) {
+  let server;
+
+  try {
+    server = await Server.findOne({ _id: req.body.serverId });
+    if (req.body.serverName) {
+      server.serverName = req.body.serverName;
+    }
+
+    await server.save();
+  } catch (error) {
+    console.log(error);
+  }
+
+  res.status(200).json({
+    status: "success",
+    server: server,
+  });
+};

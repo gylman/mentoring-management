@@ -10,10 +10,6 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
-import IconButton from "@material-ui/core/IconButton";
-
-import DeleteIcon from "@material-ui/icons/Delete";
-import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -60,14 +56,16 @@ export default function DailyStatisticsTable({ columns, rows }) {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                  <TableRow hover role="checkbox" tabIndex={-1} key={cuid()}>
                     {columns.map((column) => {
                       const value = row[column.extractor];
                       return (
                         <TableCell key={column.id} align="left">
                           {column.extractor === "startTime" ||
                           column.extractor === "endTime"
-                            ? moment(value).format("LT")
+                            ? moment(value).format("LT") === "Invalid date"
+                              ? "in conference"
+                              : moment(value).format("LT")
                             : value}
                         </TableCell>
                       );

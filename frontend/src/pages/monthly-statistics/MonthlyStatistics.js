@@ -1,10 +1,9 @@
-import cuid from "cuid";
 import moment from "moment";
 import React from "react";
 import axios from "axios";
 import MonthlyStatisticsTable from "./MonthlyStatisticsTable";
 import DateFnsUtils from "@date-io/date-fns";
-import { Grid, TextField, Typography } from "@material-ui/core";
+import { CircularProgress, Grid, Typography } from "@material-ui/core";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
@@ -16,14 +15,10 @@ function MonthlyStatistics() {
   const [sumOfUsedTime, setSumOfUsedTime] = React.useState("");
   const [days, setDays] = React.useState([]);
   const [date, setDate] = React.useState(new Date());
-  const [dummyData, setDummyData] = React.useState([]);
   const tableHeaders = [
     { label: "Date", extractor: "day" },
     { label: "Usage in mins", extractor: "spentTime" },
   ];
-  console.log("====================================");
-  console.log(days);
-  console.log("====================================");
   React.useEffect(() => {
     async function getData() {
       const headersObject = {
@@ -58,7 +53,7 @@ function MonthlyStatistics() {
           setLoading(false);
           const days = [];
 
-          Object.keys(dayObj).map((key) => {
+          Object.keys(dayObj).forEach((key) => {
             days.push({ day: key, spentTime: dayObj[key] });
           });
           setDays(days);
@@ -87,7 +82,22 @@ function MonthlyStatistics() {
     }
 
     getData();
-  }, [auth.token, date]);
+  }, [auth.token, date, params.userId]);
+
+  if (loading) {
+    return (
+      <Grid
+        style={{ minHeight: "80vh" }}
+        container
+        justify="center"
+        alignItems="center"
+      >
+        <Grid item>
+          <CircularProgress />
+        </Grid>
+      </Grid>
+    );
+  }
 
   return (
     <Grid container>
@@ -110,8 +120,6 @@ function MonthlyStatistics() {
               variant="inline"
               openTo="year"
               views={["year", "month"]}
-              // label="Year and Month"
-              // helperText="Start from year selection"
               value={date}
               onChange={setDate}
               autoOk={true}

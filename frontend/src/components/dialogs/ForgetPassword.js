@@ -57,19 +57,22 @@ const DialogActions = withStyles((theme) => ({
   },
 }))(MuiDialogActions);
 
-export default function ForgetPassword({ handleClose, open, setAlert }) {
+export default function ForgetPassword({
+  handleClose,
+  open,
+  setAlert,
+  setLoading,
+}) {
   const [email, setEmail] = React.useState("");
   async function submitForgetPassword() {
+    setLoading(true);
     try {
       const response = await axios.post(
         `http://59.26.51.139:5555/api/v1/auth/forgetpassword`,
         {
-          email: email.trim(),
+          email: email,
         }
       );
-      console.log("====================================");
-      console.log(response);
-      console.log("====================================");
       if (response.data.status === "success") {
         setAlert({
           color: "#00B848",
@@ -77,6 +80,7 @@ export default function ForgetPassword({ handleClose, open, setAlert }) {
           message:
             "We successfully emailed you your details, please check your email.",
         });
+        setLoading(false);
       } else {
       }
     } catch (error) {

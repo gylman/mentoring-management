@@ -10,10 +10,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import moment from "moment";
-import { IconButton, Input, InputAdornment, Tooltip } from "@material-ui/core";
-import CheckIcon from "@material-ui/icons/Check";
-import DeleteIcon from "@material-ui/icons/Delete";
-import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -24,17 +20,10 @@ const useStyles = makeStyles({
   },
 });
 
-export default function McuTable({
-  columns,
-  rows,
-  deleteOption,
-  updateServerName,
-}) {
+export default function McuTable({ columns, rows }) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [editCellID, setEditCellID] = React.useState("");
-  const [cellInput, setCellInput] = React.useState("");
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -67,9 +56,8 @@ export default function McuTable({
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                  <TableRow hover role="checkbox" tabIndex={-1} key={cuid()}>
                     <TableCell align="left">{row.roomId}</TableCell>
-
                     <TableCell align="center">
                       {moment(row.startTime).format("LLL")}
                     </TableCell>

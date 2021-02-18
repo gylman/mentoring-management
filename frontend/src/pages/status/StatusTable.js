@@ -22,6 +22,15 @@ const useStyles = makeStyles({
   container: {
     maxHeight: 440,
   },
+  link: {
+    color: "rgb(0, 0, 238)",
+    "&:hover": {
+      color: "rgb(0, 0, 238)",
+    },
+    "&:visited": {
+      color: "rgb(0, 0, 238)",
+    },
+  },
 });
 
 export default function McuTable({
@@ -29,6 +38,10 @@ export default function McuTable({
   rows,
   deleteOption,
   updateServerName,
+  setDeletionCandidate,
+  setConfirmDialogState,
+  confirmDialogState,
+  setDeletionCandidateName,
 }) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
@@ -52,11 +65,7 @@ export default function McuTable({
           <TableHead>
             <TableRow>
               {columns.map((column) => (
-                <TableCell
-                  key={cuid()}
-                  align={column.align}
-                  // style={{ minWidth: column.minWidth }}
-                >
+                <TableCell key={cuid()} align={column.align}>
                   {column.label}
                 </TableCell>
               ))}
@@ -67,8 +76,8 @@ export default function McuTable({
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                    {editCellID === row.id ? (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={cuid()}>
+                    {editCellID === row._id ? (
                       <TableCell align="left" scope="row">
                         <form
                           onSubmit={(event) => {
@@ -79,7 +88,6 @@ export default function McuTable({
                         >
                           <Input
                             id="rename-input"
-                            // type={values.showPassword ? "text" : "password"}
                             value={cellInput}
                             onChange={(event) =>
                               setCellInput(event.target.value)
@@ -93,7 +101,6 @@ export default function McuTable({
                                     updateServerName(editCellID, cellInput);
                                     setEditCellID("");
                                   }}
-                                  // onMouseDown={handleMouseDownPassword}
                                 >
                                   <CheckIcon />
                                 </IconButton>
@@ -105,7 +112,7 @@ export default function McuTable({
                     ) : (
                       <TableCell
                         onDoubleClick={() => {
-                          setEditCellID(row.id);
+                          setEditCellID(row._id);
                           setCellInput(row.serverName);
                         }}
                         component="th"
@@ -122,7 +129,10 @@ export default function McuTable({
                     )}
 
                     <TableCell align="center">
-                      <Link to={`server-details/${row.serverId}`}>
+                      <Link
+                        to={`server-details/${row.serverId}`}
+                        className={classes.link}
+                      >
                         {row.serverId}
                       </Link>
                     </TableCell>
@@ -134,13 +144,13 @@ export default function McuTable({
                           aria-label="delete"
                           style={{ width: "20px", height: "20px" }}
                           onClick={() => {
-                            // setDeletionCandidate(row["_id"]);
-                            // // setServerDeletionCandiateName(row["name"]);
-                            // setConfirmDialogState({
-                            //   ...confirmDialogState,
-                            //   open: true,
-                            //   description: `Are you sure that you want to delete the server named "${row["name"]}"?`,
-                            // });
+                            setDeletionCandidate(row["_id"]);
+                            setDeletionCandidateName(row["serverName"]);
+                            setConfirmDialogState({
+                              ...confirmDialogState,
+                              open: true,
+                              description: `Are you sure that you want to delete the server named "${row["serverName"]}"?`,
+                            });
                           }}
                         >
                           <DeleteIcon

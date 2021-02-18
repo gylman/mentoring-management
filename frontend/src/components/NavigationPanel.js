@@ -14,7 +14,6 @@ import { Button } from "@material-ui/core";
 import Logo from "../assets/images/logo.png";
 import { Link, useHistory } from "react-router-dom";
 import cuid from "cuid";
-import TrendingUpIcon from "@material-ui/icons/TrendingUp";
 import BuildIcon from "@material-ui/icons/Build";
 import PersonIcon from "@material-ui/icons/Person";
 import PeopleIcon from "@material-ui/icons/People";

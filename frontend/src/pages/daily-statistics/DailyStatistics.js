@@ -2,7 +2,12 @@ import moment from "moment";
 import axios from "axios";
 import React from "react";
 import DailyStatisticsTable from "./DailyStatisticsTable";
-import { Grid, TextField, Typography } from "@material-ui/core";
+import {
+  CircularProgress,
+  Grid,
+  TextField,
+  Typography,
+} from "@material-ui/core";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
 
@@ -76,7 +81,22 @@ function DailyStatistics() {
     }
 
     getData();
-  }, [auth.token, date]);
+  }, [auth.token, date, params.userId]);
+
+  if (loading) {
+    return (
+      <Grid
+        style={{ minHeight: "80vh" }}
+        container
+        justify="center"
+        alignItems="center"
+      >
+        <Grid item>
+          <CircularProgress />
+        </Grid>
+      </Grid>
+    );
+  }
 
   return (
     <Grid container>

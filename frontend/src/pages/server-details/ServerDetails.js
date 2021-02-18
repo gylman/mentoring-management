@@ -51,7 +51,7 @@ function ServerDetails() {
     }
 
     getData();
-  }, [auth.token]);
+  }, [auth.token, params.serverId]);
 
   if (loading) {
     return (

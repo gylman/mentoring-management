@@ -20,6 +20,15 @@ const useStyles = makeStyles({
   container: {
     maxHeight: 440,
   },
+  link: {
+    color: "rgb(0, 0, 238)",
+    "&:hover": {
+      color: "rgb(0, 0, 238)",
+    },
+    "&:visited": {
+      color: "rgb(0, 0, 238)",
+    },
+  },
 });
 
 export default function MonthlyStatisticsTable({ columns, rows, userId }) {
@@ -58,7 +67,7 @@ export default function MonthlyStatisticsTable({ columns, rows, userId }) {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                  <TableRow hover role="checkbox" tabIndex={-1} key={cuid()}>
                     {columns.map((column) => {
                       const value = row[column.extractor];
                       return column.extractor === "daily-statistics" ? (
@@ -73,6 +82,7 @@ export default function MonthlyStatisticsTable({ columns, rows, userId }) {
                             to={`/daily-statistics/${userId}/${moment(
                               value
                             ).format("LL")}`}
+                            className={classes.link}
                           >
                             {value}
                           </Link>

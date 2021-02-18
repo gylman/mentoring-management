@@ -29,14 +29,12 @@ const useStyles = makeStyles((theme) => ({
     color: "black",
     fontSize: 35,
     fontWeight: "bold",
-    color: "#003a76",
     fontFamily: "Open Sans Condensed",
   },
   loginTitle: {
     color: "black",
     fontSize: 35,
     fontWeight: "bold",
-    color: "#003a76",
     textAlign: "center",
     fontFamily: "Open Sans Condensed",
   },
@@ -179,32 +177,40 @@ function SignIn() {
             </Grid>
           </Grid>
         ) : (
-          <Grid item container justify="center" style={{ marginBottom: "1em" }}>
-            <Grid item md={3}>
-              <Button
-                variant="contained"
-                color="primary"
-                fullWidth
-                onClick={() => {
-                  // setIsUserLoggedIn(true);
-                  submitLoginForm();
-                }}
-              >
-                Sign in
-              </Button>
-            </Grid>
-          </Grid>
-        )}
-        <Grid item container justify="center">
-          <Grid item md={3}>
-            <Typography
-              className={classes.forgotCredentials}
-              onClick={() => setForgetPasswordState(true)}
+          <>
+            <Grid
+              item
+              container
+              justify="center"
+              style={{ marginBottom: "1em" }}
             >
-              forgot ID / password
-            </Typography>
-          </Grid>
-        </Grid>
+              <Grid item md={3}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  onClick={() => {
+                    // setIsUserLoggedIn(true);
+                    submitLoginForm();
+                  }}
+                >
+                  Sign in
+                </Button>
+              </Grid>
+            </Grid>
+            <Grid item container justify="center">
+              <Grid item md={3}>
+                <Typography
+                  className={classes.forgotCredentials}
+                  onClick={() => setForgetPasswordState(true)}
+                >
+                  forgot ID / password
+                </Typography>
+              </Grid>
+            </Grid>
+          </>
+        )}
+
         <Snackbar
           onClose={handleClose}
           open={alert.open}
@@ -224,6 +230,7 @@ function SignIn() {
           handleClose={() => {
             setForgetPasswordState(false);
           }}
+          setLoading={setLoading}
           setAlert={setAlert}
         />
       </Grid>
